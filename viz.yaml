@@ -1,0 +1,29 @@
+vizlab: "0.3.6"
+info:
+  id: gage-conditions
+  name: USGS Gage Conditions
+  date: 2018-06-11
+  publish-date: 2019-06-25
+  path: /gage-conditions
+  analytics-id: UA-78530187-1
+  description: >-
+    Map of all USGS gages and their conditions.
+  thumbnail:
+    url:
+    width: 250
+    height: 250
+    alttext:
+  required-packages:
+    vizlab:
+      repo: github
+      version: 0.3.6
+      name: USGS-VIZLAB/vizlab
+      ref: v0.3.6
+    dplyr:
+      repo: CRAN
+      version: 0.7.4
+parameter:
+fetch:
+process:
+visualize:
+publish:
