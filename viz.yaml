@@ -5,7 +5,7 @@ info:
   date: 2018-06-11
   publish-date: 2019-06-25
   path: /gage-conditions
-  analytics-id: UA-78530187-1
+  analytics-id: UA-78530187-1 # is this right?? Irma is this but -8 instead of -1
   description: >-
     Map of all USGS gages and their conditions.
   thumbnail:
@@ -19,11 +19,47 @@ info:
       version: 0.3.6
       name: USGS-VIZLAB/vizlab
       ref: v0.3.6
+    dataRetrieval:
+      repo: CRAN
+      version: 2.7.4
     dplyr:
       repo: CRAN
       version: 0.7.4
 parameter:
+  - id: plot_date
+    date: "2018-05-01"
 fetch:
+  - id: dv_sites
+    location: cache/dv_sites.json
+    reader: json
+    fetcher: dv_sites
+    scripts: [scripts/fetch/dv_sites.R]
+    depends:
+      date: plot_date
+  - id: site_stats # took about 20 min
+    location: cache/site_stats.json
+    reader: json
+    fetcher: site_stats
+    scripts: [scripts/fetch/site_stats.R]
+    depends:
+      sites: dv_sites
+  - id: dv_data # took about 30 min
+    location: cache/dv_data.json
+    reader: json
+    fetcher: dv_data
+    scripts: [scripts/fetch/dv_data.R]
+    depends:
+      date: plot_date
+      sites: dv_sites
 process:
+  - id: dv_stats
+    location: cache/dv_stats.json
+    reader: json
+    processor: dv_stats
+    scripts: [scripts/process/dv_stats.R]
+    depends:
+      date: plot_date
+      site_stats: site_stats
+      data: dv_data
 visualize:
 publish:
