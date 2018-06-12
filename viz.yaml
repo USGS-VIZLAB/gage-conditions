@@ -6,13 +6,7 @@ info:
   publish-date: 2019-06-25
   path: /gage-conditions
   analytics-id: UA-78530187-1 # is this right?? Irma is this but -8 instead of -1
-  description: >-
-    Map of all USGS gages and their conditions.
-  thumbnail:
-    url:
-    width: 250
-    height: 250
-    alttext:
+  description: Map of all USGS gages and their conditions.
   required-packages:
     vizlab:
       repo: github
