@@ -19,6 +19,15 @@ info:
     dplyr:
       repo: CRAN
       version: 0.7.4
+  contributors:
+    -
+      name: Lindsay Carr
+      email: lcarr@usgs.gov
+      affiliation: U.S. Geological Survey
+    -
+      name: Jordan Read
+      email: jread@usgs.gov
+      affiliation: U.S. Geological Survey
 parameter:
   - id: plot_date
     date: "2018-05-01"
