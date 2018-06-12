@@ -5,7 +5,7 @@ info:
   date: 2018-06-11
   publish-date: 2019-06-25
   path: /gage-conditions
-  analytics-id: UA-78530187-1 # is this right?? Irma is this but -8 instead of -1
+  analytics-id: # WE WILL NEED TO FILL THIS IN AT SOME POINT
   description: Map of all USGS gages and their conditions.
   required-packages:
     vizlab:
