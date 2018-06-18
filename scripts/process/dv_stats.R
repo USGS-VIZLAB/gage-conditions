@@ -9,6 +9,10 @@ process.dv_stats <- function(viz){
   date <- deps[["date"]][["date"]]
   site_stats <- deps[["site_stats"]]
   data <- deps[["data"]]
+  stat_types <- deps[["percentiles"]][["percentiles"]]
+  
+  stat_colnames <- sprintf("p%s_va", stat_types)
+  stat_perc <- as.numeric(stat_types)/100
   
   get_dv <- function(site_no){
     out <- rep(NA, length(site_no))
@@ -21,24 +25,32 @@ process.dv_stats <- function(viz){
     return(out)
   }
   
-  int_per <- function(p05_va, p10_va, p20_va, p25_va, p50_va, p75_va, p80_va, p95_va, dv_val){
-    out <- rep(NA, length(dv_val))
-    
+  int_per <- function(df){
+    df <- select(df, "dv_val", one_of(stat_colnames))
+    out <- rep(NA, nrow(df))
     
     for (i in 1:length(out)){
-      y <- c(0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.95)
-      x <- c(p05_va[i], p10_va[i], p20_va[i], p25_va[i], p50_va[i], p75_va[i], p80_va[i], p95_va[i]) %>% as.numeric
+      dv_val <- df$dv_val[i]
+      
+      df_i <- slice(df, i) %>% 
+        select(-dv_val) %>% 
+        tidyr::gather(stat_name, stat_value) %>% 
+        mutate(stat_value = as.numeric(stat_value),
+               stat_type = as.numeric(gsub("p|_va", "", stat_name))/100)
+      
+      y <- df_i$stat_type
+      x <- df_i$stat_value
       nas <- is.na(x)
       x <- x[!nas]
       y <- y[!nas]
       if (length(unique(x)) < 2){
         out[i] <- NA
-      } else if (dv_val[i] < x[1L]){ # the first and last *have* to be numbers per filtering criteria
-        out[i] <- 0.05
-      } else if (dv_val[i] > tail(x, 1L)){
-        out[i] <- 0.95
+      } else if (dv_val < x[1L]){ # the first and last *have* to be numbers per filtering criteria
+        out[i] <- head(stat_perc, 1)
+      } else if (dv_val > tail(x, 1L)){
+        out[i] <- tail(stat_perc, 1)
       } else {
-        out[i] <- approx(x, y, xout = dv_val[i])$y
+        out[i] <- approx(x, y, xout = dv_val)$y
       }
     }
     return(out)
@@ -49,8 +61,10 @@ process.dv_stats <- function(viz){
     filter(month_nu == as.numeric(format(as.Date(date), "%m")) & 
              day_nu == as.numeric(format(as.Date(date), "%d"))) %>% 
     mutate(dv_val = get_dv(site_no)) %>% 
-    filter(!is.na(p05_va), !is.na(p95_va), !is.na(dv_val)) %>% 
-    mutate(per = int_per(p05_va, p10_va, p20_va, p25_va, p50_va, p75_va, p80_va, p95_va, dv_val)) %>% 
+    filter_(sprintf("!is.na(%s)", stat_colnames[1]), 
+            sprintf("!is.na(%s)", tail(stat_colnames,1)), 
+            sprintf("!is.na(%s)", "dv_val")) %>%
+    mutate(per = int_per(.)) %>% 
     select(site_no, per)
   
   jsonlite::write_json(site_stats_viz, viz[["location"]])

@@ -10,6 +10,7 @@ fetch.site_stats <- function(viz){
   checkRequired(deps, "sites")
   sites <- deps[["sites"]]
   block_size <- deps[["block_size"]][["size"]]
+  stat_types <- deps[["percentiles"]][["percentiles"]]
   
   req_bks <- seq(1, length(sites), by=block_size)
   stat_data <- data.frame()
@@ -19,8 +20,7 @@ fetch.site_stats <- function(viz){
       readNWISstat(siteNumbers = get_sites,
                    parameterCd = "00060", 
                    statReportType="daily",
-                   statType=c("P05", "P10", "P20", "P25", "P50", 
-                              "P75", "P80", "P90", "P95","mean")
+                   statType=paste0("P", stat_types)
       ))
     stat_data <- rbind(stat_data,current_sites)
   }
