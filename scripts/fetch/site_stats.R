@@ -9,11 +9,12 @@ fetch.site_stats <- function(viz){
   deps <- readDepends(viz)
   checkRequired(deps, "sites")
   sites <- deps[["sites"]]
+  block_size <- deps[["block_size"]][["size"]]
   
-  req_bks <- seq(1, length(sites),by=10)
+  req_bks <- seq(1, length(sites), by=block_size)
   stat_data <- data.frame()
   for(i in req_bks) {
-    get_sites <- sites[i:(i+9)]
+    get_sites <- sites[i:(i+block_size-1)]
     current_sites <- suppressWarnings(
       readNWISstat(siteNumbers = get_sites,
                    parameterCd = "00060", 

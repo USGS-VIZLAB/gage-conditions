@@ -31,6 +31,8 @@ info:
 parameter:
   - id: plot_date
     date: "2018-05-01"
+  - id: block_size
+    size: 10
 fetch:
   - id: dv_sites
     location: cache/dv_sites.json
@@ -46,6 +48,7 @@ fetch:
     scripts: [scripts/fetch/site_stats.R]
     depends:
       sites: dv_sites
+      block_size: block_size
   - id: dv_data # took about 30 min
     location: cache/dv_data.json
     reader: json
