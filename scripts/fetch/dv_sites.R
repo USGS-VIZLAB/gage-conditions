@@ -5,6 +5,7 @@ fetchTimestamp.dv_sites <- vizlab::alwaysCurrent
 #' @param viz a vizlab object that depends on the date
 fetch.dv_sites <- function(viz){
   library(dataRetrieval)
+  library(dplyr)
   
   deps <- readDepends(viz)
   checkRequired(deps, "date")
@@ -18,7 +19,7 @@ fetch.dv_sites <- function(viz){
                           startDate = date,
                           parameterCd = "00060", 
                           statCd = "00003") %>% 
-      .$site_no %>% 
+      pull(site_no) %>% 
       c(sites)
   }
   
