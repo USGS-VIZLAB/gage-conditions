@@ -5,11 +5,14 @@ process.dv_stats <- function(viz){
   library(dplyr)
   
   deps <- readDepends(viz)
-  checkRequired(deps, c("date", "site_stats", "data"))
-  date <- deps[["date"]][["date"]]
+  checkRequired(deps, c("year", "monthday", "site_stats", "data", "percentiles"))
+  year <- deps[["year"]][["year"]]
+  monthday <- deps[["monthday"]][["monthday"]]
   site_stats <- deps[["site_stats"]]
   data <- deps[["data"]]
   stat_types <- deps[["percentiles"]][["percentiles"]]
+  
+  date <- paste0(year, "-", monthday)
   
   stat_colnames <- sprintf("p%s_va", stat_types)
   stat_perc <- as.numeric(stat_types)/100

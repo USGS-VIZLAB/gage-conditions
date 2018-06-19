@@ -32,8 +32,10 @@ info:
       email: jread@usgs.gov
       affiliation: U.S. Geological Survey
 parameter:
-  - id: plot_date
-    date: "2018-05-01"
+  - id: plot_monthday
+    monthday: "05-01"
+  - id: plot_year
+    year: 2018
   - id: block_size
     size: 10
   - id: discharge_percentiles
@@ -45,8 +47,8 @@ fetch:
     fetcher: dv_sites
     scripts: [scripts/fetch/dv_sites.R]
     depends:
-      date: plot_date
-  - id: site_stats # took about 20 min
+      year: plot_year
+  - id: site_stats # took about 20 min for all time
     location: cache/site_stats.json
     reader: json
     fetcher: site_stats
@@ -55,13 +57,13 @@ fetch:
       sites: dv_sites
       block_size: block_size
       percentiles: discharge_percentiles
-  - id: dv_data # took about 30 min
+  - id: dv_data # took about 45 min for 1 yr
     location: cache/dv_data.json
     reader: json
     fetcher: dv_data
     scripts: [scripts/fetch/dv_data.R]
     depends:
-      date: plot_date
+      year: plot_year
       sites: dv_sites
 process:
   - id: dv_stats
@@ -70,7 +72,8 @@ process:
     processor: dv_stats
     scripts: [scripts/process/dv_stats.R]
     depends:
-      date: plot_date
+      year: plot_year
+      monthday: plot_monthday
       site_stats: site_stats
       data: dv_data
       percentiles: discharge_percentiles

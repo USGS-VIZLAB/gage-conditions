@@ -7,17 +7,20 @@ fetch.dv_data <- function(viz){
   library(dataRetrieval)
   
   deps <- readDepends(viz)
-  checkRequired(deps, c("date", "sites"))
-  date <- deps[["date"]][["date"]]
+  checkRequired(deps, c("year", "sites"))
+  year <- deps[["year"]][["year"]]
   sites <- deps[["sites"]]
+  
+  startDate <- paste0(year, "-01-01")
+  endDate <- paste0(year, "-12-31")
   
   dv_sites_data <- sapply(sites, FUN = function(x){
     d <- renameNWISColumns(
       readNWISdata(service="dv",
                    site = x,
                    parameterCd="00060",
-                   startDate = date,
-                   endDate = date))
+                   startDate = startDate,
+                   endDate = endDate))
     if (!is.null(d$Flow)){
       d$Flow
     } else {

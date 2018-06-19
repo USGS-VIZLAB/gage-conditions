@@ -7,7 +7,7 @@ fetch.site_stats <- function(viz){
   library(dataRetrieval)
   
   deps <- readDepends(viz)
-  checkRequired(deps, "sites")
+  checkRequired(deps, c("sites", "block_size", "percentiles"))
   sites <- deps[["sites"]]
   block_size <- deps[["block_size"]][["size"]]
   stat_types <- deps[["percentiles"]][["percentiles"]]
