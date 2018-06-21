@@ -90,9 +90,10 @@ publish:
       footer_css: lib-footer-css
       header: header_section
       footer: footer_section
+      figure_section: figure_section
     context:
       resources: [lib-d3-v4, header_css, footer_css]
-      sections: []
+      sections: [figure_section]
   -
     id: header_section
     template: header-template
@@ -108,3 +109,17 @@ publish:
     blogsInFooter: FALSE
     github-url: https://github.com/USGS-VIZLAB/gage-conditions
     vizzies: FALSE
+  -
+    id: figure_section # need this so that d3 code gets run after d3 has been loaded
+    template: layout/templates/main_fig.mustache
+    publisher: section
+    depends:
+      script: bundle_js
+    context: 
+      script: script
+  -
+    id: bundle_js
+    location: dist/bundle.js
+    mimetype: application/javascript
+    publisher: webpacker
+    scripts: scripts/publish/webpacker.R
