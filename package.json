@@ -1,0 +1,14 @@
+{
+    "name": "gage-conditions",
+    "version": "",
+    "description": "",
+    "scripts": {
+        "start": "webpack --mode development"
+    },
+    "dependencies": {
+        "webpack": "^4.12.0"
+    },
+    "devDependencies": {
+        "webpack-cli": "^3.0.8"
+    }
+}
