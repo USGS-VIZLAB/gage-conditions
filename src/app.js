@@ -1,3 +1,6 @@
+// require d3 (can only do this is d3 has been installed, `npm install d3`)
+var d3 = require('d3');
+
 // setup
 var h = 200;
 var w = 700;
@@ -16,7 +19,7 @@ var svg = d3.select("body").select("#mainFig")
       .attr("id", "plotarea") // id == #plot in css, class == .plot in css
       .attr("width", w)
       .attr("height", h);
-
+    
 svg.selectAll("circle")
   .data([1,2,3,4,5])
   .enter()
@@ -24,3 +27,4 @@ svg.selectAll("circle")
     .attr("cx", function(d, i) { return i*100 + 20; })
     .attr("cy", 100)
     .attr("r", function(d) { return d*10; });
+

@@ -85,14 +85,13 @@ publish:
     publisher: page
     template: fullpage
     depends: 
-      lib-d3-v4: lib-d3-js
       header_css: lib-header-css
       footer_css: lib-footer-css
       header: header_section
       footer: footer_section
       figure_section: figure_section
     context:
-      resources: [lib-d3-v4, header_css, footer_css]
+      resources: [header_css, footer_css]
       sections: [figure_section]
   -
     id: header_section
