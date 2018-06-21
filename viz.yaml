@@ -79,3 +79,32 @@ process:
       percentiles: discharge_percentiles
 visualize:
 publish:
+  - 
+    id: viz_page
+    name: index
+    publisher: page
+    template: fullpage
+    depends: 
+      lib-d3-v4: lib-d3-js
+      header_css: lib-header-css
+      footer_css: lib-footer-css
+      header: header_section
+      footer: footer_section
+    context:
+      resources: [lib-d3-v4, header_css, footer_css]
+      sections: []
+  -
+    id: header_section
+    template: header-template
+    publisher: header
+    depends: lib-header-css
+    context:
+      title: "U.S. Geological Survey Gage Conditions"
+  -
+    id: footer_section
+    template: footer-template
+    publisher: section
+    depends: lib-footer-css
+    blogsInFooter: FALSE
+    github-url: https://github.com/USGS-VIZLAB/gage-conditions
+    vizzies: FALSE
