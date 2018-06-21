@@ -1,0 +1,81 @@
+vizlab: "0.3.6"
+info:
+  id: gage-conditions
+  name: USGS Gage Conditions
+  date: 2018-06-11
+  publish-date: 2019-06-25
+  path: /gage-conditions
+  analytics-id: # WE WILL NEED TO FILL THIS IN AT SOME POINT
+  description: Map of all USGS gages and their conditions.
+  required-packages:
+    vizlab:
+      repo: github
+      version: 0.3.6
+      name: USGS-VIZLAB/vizlab
+      ref: v0.3.6
+    dataRetrieval:
+      repo: CRAN
+      version: 2.7.4
+    dplyr:
+      repo: CRAN
+      version: 0.7.4
+    tidyr:
+      repo: CRAN
+      version: 0.8.1
+  contributors:
+    -
+      name: Lindsay Carr
+      email: lcarr@usgs.gov
+      affiliation: U.S. Geological Survey
+    -
+      name: Jordan Read
+      email: jread@usgs.gov
+      affiliation: U.S. Geological Survey
+parameter:
+  - id: plot_monthday
+    monthday: "05-01"
+  - id: plot_year
+    year: 2018
+  - id: block_size
+    size: 10
+  - id: discharge_percentiles
+    percentiles: ["05","10","20","25","50","75","80","90","95"]
+fetch:
+  - id: dv_sites
+    location: cache/dv_sites.json
+    reader: json
+    fetcher: dv_sites
+    scripts: [scripts/fetch/dv_sites.R]
+    depends:
+      year: plot_year
+  - id: site_stats # took about 20 min for all time
+    location: cache/site_stats.json
+    reader: json
+    fetcher: site_stats
+    scripts: [scripts/fetch/site_stats.R]
+    depends:
+      sites: dv_sites
+      block_size: block_size
+      percentiles: discharge_percentiles
+  - id: dv_data # took about 45 min for 1 yr
+    location: cache/dv_data.json
+    reader: json
+    fetcher: dv_data
+    scripts: [scripts/fetch/dv_data.R]
+    depends:
+      year: plot_year
+      sites: dv_sites
+process:
+  - id: dv_stats
+    location: cache/dv_stats.json
+    reader: json
+    processor: dv_stats
+    scripts: [scripts/process/dv_stats.R]
+    depends:
+      year: plot_year
+      monthday: plot_monthday
+      site_stats: site_stats
+      data: dv_data
+      percentiles: discharge_percentiles
+visualize:
+publish:
