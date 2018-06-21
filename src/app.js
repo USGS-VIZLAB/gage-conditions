@@ -1,6 +1,10 @@
 // require d3 (can only do this is d3 has been installed, `npm install d3`)
 var d3 = require('d3');
 
+// webpack import functions
+import {load_dv_data} from './modules/data_loading';
+import {add_circles} from './modules/circles';
+
 // setup
 var h = 200;
 var w = 700;
@@ -20,11 +24,9 @@ var svg = d3.select("body").select("#mainFig")
       .attr("width", w)
       .attr("height", h);
     
-svg.selectAll("circle")
-  .data([1,2,3,4,5])
-  .enter()
-  .append("circle")
-    .attr("cx", function(d, i) { return i*100 + 20; })
-    .attr("cy", 100)
-    .attr("r", function(d) { return d*10; });
+var dv_stats_data = load_dv_data();
+
+Promise.all([dv_stats_data]).then(function(data) {
+  add_circles(data[0]);
+});
 

@@ -68,6 +68,7 @@ fetch:
 process:
   - id: dv_stats
     location: cache/dv_stats.json
+    mimetype: application/json
     reader: json
     processor: dv_stats
     scripts: [scripts/process/dv_stats.R]
@@ -90,6 +91,7 @@ publish:
       header: header_section
       footer: footer_section
       figure_section: figure_section
+      dv_stats: dv_stats
     context:
       resources: [header_css, footer_css]
       sections: [figure_section]
