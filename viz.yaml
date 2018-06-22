@@ -68,6 +68,7 @@ fetch:
 process:
   - id: dv_stats
     location: cache/dv_stats.json
+    mimetype: application/json
     reader: json
     processor: dv_stats
     scripts: [scripts/process/dv_stats.R]
@@ -79,3 +80,47 @@ process:
       percentiles: discharge_percentiles
 visualize:
 publish:
+  - 
+    id: viz_page
+    name: index
+    publisher: page
+    template: fullpage
+    depends: 
+      header_css: lib-header-css
+      footer_css: lib-footer-css
+      header: header_section
+      footer: footer_section
+      figure_section: figure_section
+      dv_stats: dv_stats
+    context:
+      resources: [header_css, footer_css]
+      sections: [figure_section]
+  -
+    id: header_section
+    template: header-template
+    publisher: header
+    depends: lib-header-css
+    context:
+      title: "U.S. Geological Survey Gage Conditions"
+  -
+    id: footer_section
+    template: footer-template
+    publisher: section
+    depends: lib-footer-css
+    blogsInFooter: FALSE
+    github-url: https://github.com/USGS-VIZLAB/gage-conditions
+    vizzies: FALSE
+  -
+    id: figure_section # need this so that d3 code gets run after d3 has been loaded
+    template: layout/templates/main_fig.mustache
+    publisher: section
+    depends:
+      script: bundle_js
+    context: 
+      script: script
+  -
+    id: bundle_js
+    location: dist/bundle.js
+    mimetype: application/javascript
+    publisher: webpacker
+    scripts: scripts/publish/webpacker.R
