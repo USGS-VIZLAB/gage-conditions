@@ -1,4 +1,4 @@
-vizlab: "0.3.6"
+vizlab: "0.3.7"
 info:
   id: gage-conditions
   name: USGS Gage Conditions
@@ -118,9 +118,27 @@ publish:
       script: bundle_js
     context: 
       script: script
-  -
-    id: bundle_js
-    location: dist/bundle.js
+  - 
+    id: app_js
+    location: js/app.js
     mimetype: application/javascript
-    publisher: webpacker
-    scripts: scripts/publish/webpacker.R
+    publisher: webpackmain
+  - 
+    id: circles_js
+    location: js/circles.js
+    mimetype: application/javascript
+    publisher: webpackmodule  
+  - 
+    id: dataload_js
+    location: js/data_loading.js
+    mimetype: application/javascript
+    publisher: webpackmodule
+  - 
+    id: bundle_js
+    mimetype: application/javascript
+    depends: [app_js, circles_js, dataload_js]
+    publisher: webpack
+webpack:
+  context:
+    input: "app.js"
+    output: "bundle.js"

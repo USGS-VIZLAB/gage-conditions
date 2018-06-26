@@ -12,5 +12,3 @@ vizlab/
 remake.yaml
 .httr-oauth
 *.DS_Store
-node_modules/
-dist/
