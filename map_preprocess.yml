@@ -7,6 +7,7 @@ packages:
   - tibble
   - sbtools
   - maptools
+  - jsonlite
   - sp
   - geojsonio
 
@@ -21,6 +22,12 @@ targets:
   
   display_proj:
     command: CRS(I("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
+  
+  svg_x:
+    command: c(I(960))
+  
+  svg_y:
+    command: c(I(600))
     
   # --- fetch --- #
   
@@ -51,10 +58,10 @@ targets:
       scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -100, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
   
   state_boundaries_scaled_sp:
-    command: scale_fit_sp_coords(state_boundaries_mutated_sp, range_x = I(960), range_y = I(600))
+    command: scale_fit_sp_coords(state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
   
   site_locatations_scaled_sp:
-    command: scale_fit_sp_coords(site_locations_mutated_sp, ref = state_boundaries_mutated_sp, range_x = I(960), range_y = I(600))
+    command: scale_fit_sp_coords(site_locations_mutated_sp, ref = state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
     
   cache/state_boundaries_scaled.geojson:
     command: geojson_write(state_boundaries_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
@@ -63,9 +70,12 @@ targets:
     command: geojson_write(site_locatations_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
      
   cache/state_boundaries.svg:
-    command: geo2svg("cache/state_boundaries_scaled.geojson", target_name, w = I(960), h = I(600))
-    
+    command: geo2svg("cache/state_boundaries_scaled.geojson", target_name, w = svg_x, h = svg_y)
+     
+  cache/site_coords.tsv:
+    command: points_to_svg_coords('cache/site_locations_scaled.geojson', target_name)
+
   map_preprocess:
     depends:
       - cache/state_boundaries.svg
-      - cache/site_locations_scaled.geojson
+      - cache/site_coords.tsv

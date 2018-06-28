@@ -66,6 +66,15 @@ scale_fit_sp_coords <- function(sp, range_x, range_y, ref = sp){
   return(sp_out)
 }
 
+points_to_svg_coords <- function(geojson_filepath, tsv_filepath){
+  points_json <- jsonlite::read_json(geojson_filepath)
+  x_coords <- sapply(points_json$features, function(x) x$geometry$coordinates[[1]])
+  y_coords <- sapply(points_json$features, function(x) x$geometry$coordinates[[2]])
+  site_no <- sapply(points_json$features, function(x) x$properties$site_no)
+  data_out <- data.frame(siteID = site_no, x = x_coords, y = y_coords)
+  readr::write_tsv(data_out, tsv_filepath)
+}
+
 geo2svg <- function(geojson_filepath, svg_filepath, w, h){
   #tempjson <- file.path(tempdir(), 'temp.json')
   #system(sprintf("ndjson-split 'd.features' \
