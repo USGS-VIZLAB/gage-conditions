@@ -1,10 +1,11 @@
 
 function add_circles(dv_stats_data, scale_colors_fxn) {
 
-  d3.select("#plotarea").selectAll("circle")
+  d3.select("#plotarea").selectAll(".gage_point")
     .data(dv_stats_data)
     .enter()
     .append("circle")
+      .classed("gage_point", true)
       .attr("cx", function(d, i) { return i*10 + 20; })
       .attr("cy", function(d, i) { return Math.random()*200; })
       .attr("r", function(d) { return d.per*10; })
@@ -47,8 +48,43 @@ function create_color_scale_function(num_colors) {
   var color_percentile_scale = d3.scaleQuantize()
         .domain([0,1])
         .range(colors);
+  
+  var color_legend_scale = d3.scaleQuantize()
+        .domain([d3.min(color_indices), d3.max(color_indices)])
+        .range(colors);
 
-  return(color_percentile_scale);
+  return({
+    legend: color_legend_scale,
+    circles: color_percentile_scale
+  });
 }
 
-export {add_circles, create_color_scale_function};
+function add_color_legend(scale_colors_fxn) {
+  
+  var num_colors = scale_colors_fxn.range().length,
+      circle_radius = 10;
+  
+  var legend = d3.select("#plotarea")
+    .append("g")
+      .attr("id", "legend")
+      .attr("transform", "translate(" + 50 + "," + 250 + ")");
+  
+  legend.selectAll(".legend_point")
+    .data(d3.range(num_colors))
+    .enter()
+    .append("circle")
+      .classed("legend_point", true)
+      .attr("cx", function(d) { return d*circle_radius*2.2; })
+      .attr("cy", function(d) { return 0; })
+      .attr("r", circle_radius)
+      .attr("fill", function(d) { return scale_colors_fxn(d); })
+      .on("mouseover", function(d) {
+        d3.select(this).attr("fill", "orange");
+      })
+      .on("mouseout", function() {
+        d3.select(this)
+          .attr("fill", function(d) { return scale_colors_fxn(d); });
+      });
+}
+
+export {add_circles, create_color_scale_function, add_color_legend};

@@ -3,10 +3,10 @@ var d3 = require('d3');
 
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
-import {add_circles, create_color_scale_function} from './modules/circles';
+import {add_circles, create_color_scale_function, add_color_legend} from './modules/circles';
 
 // setup
-var h = 200;
+var h = 300;
 var w = 700;
 var margin = {
   top: 20,
@@ -24,10 +24,12 @@ var svg = d3.select("body").select("#mainFig")
       .attr("width", w)
       .attr("height", h);
 
-var scale_colors_fxn = create_color_scale_function();    
+var scale_colors_fxns = create_color_scale_function();
 var dv_stats_data = load_dv_data();
 
+add_color_legend(scale_colors_fxns.legend);
+
 Promise.all([dv_stats_data]).then(function(data) {
-  add_circles(data[0], scale_colors_fxn);
+  add_circles(data[0], scale_colors_fxns.circles);
 });
 
