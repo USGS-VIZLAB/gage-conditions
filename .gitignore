@@ -11,6 +11,18 @@ vizlab/
 .remake/
 remake.yaml
 .httr-oauth
+
+# knitr and R markdown default cache directories
+/*_cache/
+/cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+rsconnect/
+.Rproj.user
 *.DS_Store
 node_modules/
 dist/

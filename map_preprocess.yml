@@ -7,7 +7,9 @@ packages:
   - tibble
   - sbtools
   - maptools
+  - jsonlite
   - sp
+  - geojsonio
 
 sources:
   - scripts/map_preprocess/fetch_url.R
@@ -15,20 +17,34 @@ sources:
   - scripts/map_preprocess/geo_utils.R
 
 targets:
-  
-  # --- fetch --- #
-  
-  # See https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html for details on this file.
-  cache/pre_state_boundaries_census.zip:
-    command: fetch_url(target_name, I('http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_state_5m.zip'))
 
-  # --- process --- #
+  # --- parameter --- #
   
   display_proj:
     command: CRS(I("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
   
+  svg_x:
+    command: c(I(960))
+  
+  svg_y:
+    command: c(I(600))
+    
+  # --- fetch --- #
+  
+  # See https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html for details on this file.
+  cache/pre_state_boundaries_census.zip:
+    command: fetch_url(target_name, I('http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_state_20m.zip'))
+
+  # --- process --- #
+  
   state_boundaries_census_sp:
     command: read_shp_zip('cache/pre_state_boundaries_census.zip', skip = I(list(STATEFP=c('69','66','60'))))
+    
+  site_locations_sp:
+    command: readRDS('cache/site_locations_sp.rds')
+    
+  site_locations_albers_sp:
+    command: spTransform(site_locations_sp, display_proj)
     
   state_boundaries_albers_sp:
     command: spTransform(state_boundaries_census_sp, display_proj)
@@ -37,9 +53,29 @@ targets:
     command: mutate_sp_coords(state_boundaries_albers_sp, STATEFP = I(list('02', c('72', '78'), c('15'))), 
       scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -100, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
   
+  site_locations_mutated_sp:
+    command: mutate_sp_coords(site_locations_albers_sp, ref = state_boundaries_albers_sp, STATEFP = I(list('02', c('72', '78'), c('15'))), 
+      scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -100, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
+  
   state_boundaries_scaled_sp:
-    command: scale_fit_sp_coords(state_boundaries_mutated_sp, range_x = I(960), range_y = I(600))
+    command: scale_fit_sp_coords(state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
+  
+  site_locatations_scaled_sp:
+    command: scale_fit_sp_coords(site_locations_mutated_sp, ref = state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
     
+  cache/state_boundaries_scaled.geojson:
+    command: geojson_write(state_boundaries_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
+   
+  cache/site_locations_scaled.geojson:
+    command: geojson_write(site_locatations_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
+     
+  cache/state_boundaries.svg:
+    command: geo2svg("cache/state_boundaries_scaled.geojson", target_name, w = svg_x, h = svg_y)
+     
+  cache/site_coords.tsv:
+    command: points_to_svg_coords('cache/site_locations_scaled.geojson', target_name)
+
   map_preprocess:
     depends:
-      - state_boundaries_scaled_sp
+      - cache/state_boundaries.svg
+      - cache/site_coords.tsv

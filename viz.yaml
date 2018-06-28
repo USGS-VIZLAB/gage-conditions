@@ -22,6 +22,9 @@ info:
     tidyr:
       repo: CRAN
       version: 0.8.1
+    sp:
+      repo: CRAN
+      version: 1.2.7
   contributors:
     -
       name: Lindsay Carr
@@ -78,6 +81,14 @@ process:
       site_stats: site_stats
       data: dv_data
       percentiles: discharge_percentiles
+  - id: dv_sites_sp
+    location: cache/site_locations_sp.rds
+    reader: rds
+    processor: sites_to_sp
+    scripts: [scripts/process/spatial_utils.R]
+    depends: 
+      sites: dv_sites
+    
 visualize:
 publish:
   - 
