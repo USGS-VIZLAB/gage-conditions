@@ -127,8 +127,16 @@ publish:
     publisher: section
     depends:
       script: bundle_js
+      initial_svg: svg_state_map
     context: 
+      initial_svg: initial_svg
       script: script
+  - 
+    id: svg_state_map
+    location: cache/state_boundaries.svg
+    mimetype: "image/svg"
+    publisher: inline_svg
+    scripts: scripts/publish/inline_svg.R
   -
     id: bundle_js
     location: dist/bundle.js
