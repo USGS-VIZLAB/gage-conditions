@@ -76,12 +76,21 @@ points_to_svg_coords <- function(geojson_filepath, tsv_filepath){
 }
 
 geo2svg <- function(geojson_filepath, svg_filepath, w, h){
-  #tempjson <- file.path(tempdir(), 'temp.json')
-  #system(sprintf("ndjson-split 'd.features' \
-  #  < %s \
-  #  > %s", geojson_filepath, tempjson))
   
-  system(sprintf('geo2svg -w %s -h %s < %s > %s', w, h, geojson_filepath, svg_filepath))
+  svg_precision <- 2
+  tempjson <- tempfile(fileext = '.json')
+  tempsimple <- tempfile(fileext = 'simple.json')
+  tempquant <- tempfile(fileext = 'quant.json')
+  tempndjson <- tempfile(fileext = '.ndjson')
+  system(sprintf("geo2topo %s -o %s", geojson_filepath, tempjson))
+  system(sprintf("toposimplify -s 1e-4 -f  %s -o %s", tempjson, tempsimple))
+  
+  system(sprintf("topoquantize 1e5 %s -o %s", tempsimple, tempquant))
+  system(sprintf("topo2geo state_boundaries_scaled.json < %s", tempquant))
+  system(sprintf("ndjson-split 'd.features' < state_boundaries_scaled.json > %s", tempndjson))
+  
+  
+  system(sprintf('geo2svg -n -w %s -h %s -p %s < %s > %s', w, h, svg_precision, tempndjson, svg_filepath))
   
 }
 
