@@ -8,8 +8,8 @@ function add_circles(dv_stats_data, scale_colors_fxn) {
       .classed("gage_point", true)
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
-      .attr("r", function(d) { return 2; })
-      .attr("fill", function(d) { return scale_colors_fxn(d.per); })
+      .attr("r", 2)
+      .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); })
       .attr("stroke", "transparent")
       .on("mouseover", function(d) {
         d3.select(this).attr("fill", "orange");
@@ -17,7 +17,7 @@ function add_circles(dv_stats_data, scale_colors_fxn) {
       })
       .on("mouseout", function() {
         d3.select(this)
-          .attr("fill", function(d) { return scale_colors_fxn(d.per); });
+          .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
       });
 }
 
@@ -62,7 +62,7 @@ function create_color_scale_function(num_colors) {
 
 function add_color_legend(scale_colors_fxn) {
   
-  var num_colors = scale_colors_fxn.range().length,
+  var num_colors = scale_colors_fxn.legend.range().length,
       circle_radius = 10;
   
   var legend = d3.select("#plotarea")
@@ -78,14 +78,27 @@ function add_color_legend(scale_colors_fxn) {
       .attr("cx", function(d) { return d*circle_radius*2.2; })
       .attr("cy", function(d) { return 0; })
       .attr("r", circle_radius)
-      .attr("fill", function(d) { return scale_colors_fxn(d); })
+      .attr("fill", function(d) { return scale_colors_fxn.legend(d); })
       .attr("stroke", "transparent")
       .on("mouseover", function(d) {
-        d3.select(this).attr("fill", "orange");
+        d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
+        var legend_color_str = scale_colors_fxn.legend(d);
+        d3.selectAll('.gage_point')
+            .filter(function(d) { 
+              var color_str = scale_colors_fxn.circles(d.per);
+              return color_str === legend_color_str; 
+            })
+            .attr("r", 5);
       })
-      .on("mouseout", function() {
-        d3.select(this)
-          .attr("fill", function(d) { return scale_colors_fxn(d); });
+      .on("mouseout", function(d) {
+        d3.select(this).attr("stroke", "transparent");
+        var legend_color_str = scale_colors_fxn.legend(d);
+        d3.selectAll('.gage_point')
+            .filter(function(d) { 
+              var color_str = scale_colors_fxn.circles(d.per);
+              return color_str === legend_color_str; 
+            })
+            .attr("r", 2);
       });
 }
 

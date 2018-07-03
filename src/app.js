@@ -12,10 +12,9 @@ var svg = d3.select("body").select("#mainFig")
         
 var scale_colors_fxns = create_color_scale_function();
 var dv_stats_data = load_dv_data();
-
-add_color_legend(scale_colors_fxns.legend);
+add_color_legend(scale_colors_fxns);
 
 Promise.all([dv_stats_data]).then(function(data) {
-  add_circles(data[0], scale_colors_fxns.circles);
+  add_circles(data[0], scale_colors_fxns);
 });
 
