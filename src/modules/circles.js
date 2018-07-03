@@ -6,9 +6,9 @@ function add_circles(dv_stats_data, scale_colors_fxn) {
     .enter()
     .append("circle")
       .classed("gage_point", true)
-      .attr("cx", function(d, i) { return i*10 + 20; })
-      .attr("cy", function(d, i) { return Math.random()*200; })
-      .attr("r", function(d) { return d.per*10; })
+      .attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; })
+      .attr("r", function(d) { return 2; })
       .attr("fill", function(d) { return scale_colors_fxn(d.per); })
       .on("mouseover", function(d) {
         d3.select(this).attr("fill", "orange");
