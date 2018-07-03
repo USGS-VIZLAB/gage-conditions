@@ -10,6 +10,7 @@ function add_circles(dv_stats_data, scale_colors_fxn) {
       .attr("cy", function(d) { return d.y; })
       .attr("r", function(d) { return 2; })
       .attr("fill", function(d) { return scale_colors_fxn(d.per); })
+      .attr("stroke", "transparent")
       .on("mouseover", function(d) {
         d3.select(this).attr("fill", "orange");
         console.log(d.site_no);
@@ -78,6 +79,7 @@ function add_color_legend(scale_colors_fxn) {
       .attr("cy", function(d) { return 0; })
       .attr("r", circle_radius)
       .attr("fill", function(d) { return scale_colors_fxn(d); })
+      .attr("stroke", "transparent")
       .on("mouseover", function(d) {
         d3.select(this).attr("fill", "orange");
       })
