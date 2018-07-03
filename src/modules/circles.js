@@ -67,7 +67,7 @@ function add_color_legend(scale_colors_fxn) {
   var legend = d3.select("#plotarea")
     .append("g")
       .attr("id", "legend")
-      .attr("transform", "translate(" + 50 + "," + 250 + ")");
+      .attr("transform", "translate(" + 300 + "," + 40 + ")");
   
   legend.selectAll(".legend_point")
     .data(d3.range(num_colors))
