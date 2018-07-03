@@ -13,6 +13,9 @@ info:
       version: 0.3.6
       name: USGS-VIZLAB/vizlab
       ref: v0.3.6
+    bit64:
+      repo: CRAN
+      version: 0.9-7
     dataRetrieval:
       repo: CRAN
       version: 2.7.4
