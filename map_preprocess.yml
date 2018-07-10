@@ -24,10 +24,10 @@ targets:
     command: CRS(I("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
   
   svg_x:
-    command: I(1200)
+    command: I(800)
   
   svg_y:
-    command: I(700)
+    command: I(500)
   
   topo_simple:
     command: I(1e-4)
@@ -36,7 +36,7 @@ targets:
     command: I(1e4)
   
   svg_prec:
-    command: I(0)
+    command: I(1)
     
   # --- fetch --- #
   
