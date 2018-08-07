@@ -3,7 +3,8 @@
     "version": "",
     "description": "",
     "scripts": {
-        "start": "webpack --mode development"
+        "start": "webpack --mode development",
+        "dev": "webpack --mode development --watch"
     },
     "dependencies": {
         "d3": "^5.5.0",

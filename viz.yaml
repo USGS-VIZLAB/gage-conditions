@@ -1,4 +1,4 @@
-vizlab: "0.3.6"
+vizlab: "0.3.8"
 info:
   id: gage-conditions
   name: USGS Gage Conditions
@@ -10,9 +10,9 @@ info:
   required-packages:
     vizlab:
       repo: github
-      version: 0.3.6
+      version: 0.3.8
       name: USGS-VIZLAB/vizlab
-      ref: v0.3.6
+      ref: v0.3.8
     bit64:
       repo: CRAN
       version: 0.9-7
@@ -160,7 +160,6 @@ publish:
     scripts: scripts/publish/inline_svg.R
   -
     id: bundle_js
-    location: dist/bundle.js
+    relpath: js/bundle.js
     mimetype: application/javascript
-    publisher: webpacker
-    scripts: scripts/publish/webpacker.R
+    publisher: webpack

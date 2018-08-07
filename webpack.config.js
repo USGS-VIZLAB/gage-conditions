@@ -1,9 +1,10 @@
 const webpack = require("webpack");
 
 module.exports = {
-    entry: './src/app.js',
+    entry: './js/app.js',
     output: {
-        filename: './bundle.js'
+        path: __dirname + "/target/js",
+        filename: 'bundle.js'
     },
     plugins: [
       new webpack.ProvidePlugin({
