@@ -86,6 +86,14 @@ function add_color_legend(scale_colors_fxn) {
         d3.selectAll('.gage_point')
             .filter(function(d) { 
               var color_str = scale_colors_fxn.circles(d.per);
+              return color_str !== legend_color_str; 
+            })
+            .attr("stroke", function(d) { return scale_colors_fxn.circles(d.per); })
+            .attr("stroke-opacity", 0.5)
+            .attr("fill", "transparent");
+        d3.selectAll('.gage_point')
+            .filter(function(d) { 
+              var color_str = scale_colors_fxn.circles(d.per);
               return color_str === legend_color_str; 
             })
             .attr("r", 5);
@@ -96,9 +104,17 @@ function add_color_legend(scale_colors_fxn) {
         d3.selectAll('.gage_point')
             .filter(function(d) { 
               var color_str = scale_colors_fxn.circles(d.per);
-              return color_str === legend_color_str; 
+              return color_str !== legend_color_str; 
             })
-            .attr("r", 2);
+            .attr("stroke", "transparent")
+            .attr("stroke-opacity", 1)
+            .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
+        d3.selectAll('.gage_point')
+              .filter(function(d) { 
+                var color_str = scale_colors_fxn.circles(d.per);
+                return color_str === legend_color_str; 
+              })
+              .attr("r", 2);
       });
 }
 
