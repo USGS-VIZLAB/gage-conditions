@@ -13,6 +13,9 @@ info:
       version: 0.3.8
       name: USGS-VIZLAB/vizlab
       ref: v0.3.8
+    bit64:
+      repo: CRAN
+      version: 0.9-7
     dataRetrieval:
       repo: CRAN
       version: 2.7.4
@@ -68,6 +71,14 @@ fetch:
     depends:
       year: plot_year
       sites: dv_sites
+  -
+    id: dv_sites_svg
+    location: cache/site_coords.tsv
+    mimetype: text/tab-separated-values
+    reader: tabular
+    scripts:
+    comment: Needs map_preprocess.yml to exist.
+    
 process:
   - id: dv_stats
     location: cache/dv_stats.json
@@ -88,7 +99,17 @@ process:
     scripts: [scripts/process/spatial_utils.R]
     depends: 
       sites: dv_sites
-    
+  - id: dv_stats_svg_coords
+    location: cache/dv_stats_svg_coords.json
+    mimetype: application/json
+    reader: json
+    processor: combine_locations_data
+    scripts: scripts/process/combine_locations_data.R
+    depends:
+      sites_sp: dv_sites_sp # only here so that this gets re-run if that changes. but preprocess won't so it doesn't actually matter.
+      sites_svg: dv_sites_svg
+      sites_data: dv_stats
+      
 visualize:
 publish:
   - 
@@ -102,7 +123,7 @@ publish:
       header: header_section
       footer: footer_section
       figure_section: figure_section
-      dv_stats: dv_stats
+      dv_info: dv_stats_svg_coords
     context:
       resources: [header_css, footer_css]
       sections: [figure_section]
