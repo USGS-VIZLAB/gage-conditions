@@ -6,6 +6,13 @@ import {load_dv_data} from './modules/data_loading';
 import {add_circles, create_color_scale_function, add_color_legend} from './modules/circles';
 import {clone_states, add_circle_selector, find_closest_point} from './modules/interactivity';
 
+// set up configs
+var legend_config = {
+  translate_x: 300,
+  translate_y: 40,
+  circle_radius: 10
+};
+
 // use existing svg element and add some attributes
 d3.select("#mainFig").select("svg")
     .attr("id", "plotarea")
@@ -24,8 +31,8 @@ var canvas_context = canvas.node().getContext('2d'),
     dv_stats_data = load_dv_data();
 
 // add different figure features
-add_color_legend(scale_colors_fxns);
 clone_states();
+add_color_legend(scale_colors_fxns, legend_config);
 add_circle_selector();
 
 Promise.all([dv_stats_data]).then(function(data) {

@@ -54,24 +54,24 @@ function create_color_scale_function(num_colors) {
   });
 }
 
-function add_color_legend(scale_colors_fxn) {
+function add_color_legend(scale_colors_fxn, legend_cfg) {
   
-  var num_colors = scale_colors_fxn.legend.range().length,
-      circle_radius = 10;
+  var num_colors = scale_colors_fxn.legend.range().length;
   
   var legend = d3.select("#plotarea")
     .append("g")
       .attr("id", "legend")
-      .attr("transform", "translate(" + 300 + "," + 40 + ")");
+      .attr("transform", 
+            "translate(" + legend_cfg.translate_x + "," + legend_cfg.translate_y + ")");
   
   legend.selectAll(".legend_point")
     .data(d3.range(num_colors))
     .enter()
     .append("circle")
       .classed("legend_point", true)
-      .attr("cx", function(d) { return d*circle_radius*2.2; })
+      .attr("cx", function(d) { return d*legend_cfg.circle_radius*2.2; })
       .attr("cy", function(d) { return 0; })
-      .attr("r", circle_radius)
+      .attr("r", legend_cfg.circle_radius)
       .attr("fill", function(d) { return scale_colors_fxn.legend(d); })
       .attr("stroke", "transparent")
       .on("mouseover", function(d) {
