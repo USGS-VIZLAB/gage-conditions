@@ -4,6 +4,7 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {add_circles, create_color_scale_function, add_color_legend} from './modules/circles';
+import {find_closest_point} from './modules/interactivity';
 
 // use existing svg element
 var mainfig = d3.select("body").select("#mainFig");
@@ -29,12 +30,24 @@ var svg = mainfig.append('svg')
       .attr('width', 960)
       .attr('height', 600)
       .style('opacity', 0);
-  
+
+svgoriginal.append('circle')
+      .attr("id", "siteHighlighter")
+      .attr("r", 8)
+      .attr("z-index", 100)
+      .style("fill", "blue")
+      .style("opacity", 0);
+      
 var scale_colors_fxns = create_color_scale_function();
 var dv_stats_data = load_dv_data();
 add_color_legend(scale_colors_fxns);
 
 Promise.all([dv_stats_data]).then(function(data) {
   add_circles(data[0], canvas_context, scale_colors_fxns);
+  
+  d3.select('#overlayStates')
+    .on("click", function () {
+      find_closest_point(this, data[0]);
+    });
 });
 
