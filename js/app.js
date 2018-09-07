@@ -4,14 +4,18 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {add_circles, create_color_scale_function, add_color_legend} from './modules/circles';
-import {clone_states, add_circle_selector, find_closest_point} from './modules/interactivity';
+import {clone_states, clone_legend, add_circle_selector, find_closest_point} from './modules/interactivity';
 
 // set up configs
-var legend_config = {
-  translate_x: 300,
-  translate_y: 40,
-  circle_radius: 10
-};
+var fig_cfg = {
+      width: 960,
+      height: 600
+    },
+    legend_cfg = {
+      translate_x: 300,
+      translate_y: 40,
+      circle_radius: 10
+    };
 
 // use existing svg element and add some attributes
 d3.select("#mainFig").select("svg")
@@ -22,8 +26,8 @@ d3.select("#mainFig").select("svg")
 // create canvas layer
 var canvas = d3.select("#mainFig").append('canvas')
       .attr('id', "mainCanvas")
-      .attr('width', 960)
-      .attr('height', 600)
+      .attr('width', fig_cfg.width)
+      .attr('height', fig_cfg.width)
       .style("position", "absolute");
 
 var canvas_context = canvas.node().getContext('2d'),
@@ -31,9 +35,10 @@ var canvas_context = canvas.node().getContext('2d'),
     dv_stats_data = load_dv_data();
 
 // add different figure features
-clone_states();
-add_color_legend(scale_colors_fxns, legend_config);
+add_color_legend(scale_colors_fxns, legend_cfg);
 add_circle_selector();
+clone_states(fig_cfg);
+clone_legend(fig_cfg, legend_cfg);
 
 Promise.all([dv_stats_data]).then(function(data) {
   add_circles(data[0], canvas_context, scale_colors_fxns);
@@ -43,4 +48,3 @@ Promise.all([dv_stats_data]).then(function(data) {
       find_closest_point(this, data[0]);
     });
 });
-

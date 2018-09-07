@@ -1,13 +1,35 @@
 
-function clone_states() {
+function clone_states(fig_cfg) {
   //clone states SVG for transparent click layer
   var content = d3.select("#plotarea").html();
-  var svg = d3.select("#mainFig").append('svg')
+  d3.select("#mainFig").append('svg')
         .html(content)
         .attr('id', 'overlayStates')
-        .attr('width', 960)
-        .attr('height', 600)
-        .style('opacity', 0);
+        .attr('width', fig_cfg.width)
+        .attr('height', fig_cfg.height)
+        .style('opacity', 0)
+        .style("position", "absolute");
+}
+
+function clone_legend(fig_cfg, legend_cfg) {
+  //clone legend SVG for transparent click layer
+  var content = d3.select("#legend").html();
+  var overlayLegend = d3.select("#mainFig").append('svg')
+        .attr('width', fig_cfg.width)
+        .attr('height', fig_cfg.height)
+        .style('opacity', 0)
+        .append('g')
+          .html(content)
+          .attr('id', 'overlayLegend')
+          .attr("transform", 
+            "translate(" + legend_cfg.translate_x + "," + legend_cfg.translate_y + ")");
+  
+  overlayLegend.selectAll("circle").on("click", function() {
+    
+    d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
+    var legend_color_str = d3.select(this).attr("fill");
+    console.log(legend_color_str);
+  });
 }
 
 function add_circle_selector() {
@@ -51,4 +73,4 @@ function find_closest_point(click, dv_stats_data) {
   }
 }
 
-export {clone_states, add_circle_selector, find_closest_point};
+export {clone_states, clone_legend, add_circle_selector, find_closest_point};
