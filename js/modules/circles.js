@@ -1,24 +1,18 @@
 
-function add_circles(dv_stats_data, scale_colors_fxn) {
-
-  d3.select("#plotarea").selectAll(".gage_point")
-    .data(dv_stats_data)
-    .enter()
-    .append("circle")
-      .classed("gage_point", true)
-      .attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; })
-      .attr("r", 2)
-      .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); })
-      .attr("stroke", "transparent")
-      .on("mouseover", function(d) {
-        d3.select(this).attr("fill", "orange");
-        console.log(d.site_no);
-      })
-      .on("mouseout", function() {
-        d3.select(this)
-          .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
-      });
+function add_circles(dv_stats_data, canvas_context, scale_colors_fxn) {
+  
+  canvas_context.beginPath();
+  for (let i in dv_stats_data) {
+    var radius = 2,
+        scale = 2,
+        point = dv_stats_data[i];
+    if (scale > 2) radius = 1;
+    canvas_context.fillStyle = scale_colors_fxn.circles(point.per);
+    canvas_context.moveTo(point.x + radius, point.y);
+    canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+  }
+  canvas_context.fill();
+  
 }
 
 function create_color_scale_function(num_colors) {
