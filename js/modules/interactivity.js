@@ -1,4 +1,26 @@
 
+function clone_states() {
+  //clone states SVG for transparent click layer
+  var content = d3.select("#plotarea").html();
+  var svg = d3.select("#mainFig").append('svg')
+        .html(content)
+        .attr('id', 'overlayStates')
+        .attr('width', 960)
+        .attr('height', 600)
+        .style('opacity', 0);
+}
+
+function add_circle_selector() {
+  
+  // add circle to use to highlight selected points
+  d3.select("#plotarea").append('circle')
+    .attr("id", "siteHighlighter")
+    .attr("r", 8)
+    .attr("z-index", 100)
+    .style("fill", "blue")
+    .style("opacity", 0);
+}
+
 function find_closest_point(click, dv_stats_data) {
   var point = d3.mouse(click);
   var node;
@@ -29,4 +51,4 @@ function find_closest_point(click, dv_stats_data) {
   }
 }
 
-export {find_closest_point};
+export {clone_states, add_circle_selector, find_closest_point};

@@ -4,43 +4,29 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {add_circles, create_color_scale_function, add_color_legend} from './modules/circles';
-import {find_closest_point} from './modules/interactivity';
+import {clone_states, add_circle_selector, find_closest_point} from './modules/interactivity';
 
-// use existing svg element
-var mainfig = d3.select("body").select("#mainFig");
-var svgoriginal = mainfig.select("svg")
-      .attr("id", "plotarea")
-      .style("z-index", -10)
-      .style("position", "absolute");
+// use existing svg element and add some attributes
+d3.select("#mainFig").select("svg")
+    .attr("id", "plotarea")
+    .style("z-index", -10)
+    .style("position", "absolute");
 
 // create canvas layer
-var canvas = mainfig.append('canvas')
+var canvas = d3.select("#mainFig").append('canvas')
       .attr('id', "mainCanvas")
       .attr('width', 960)
       .attr('height', 600)
       .style("position", "absolute");
 
-var canvas_context = canvas.node().getContext('2d');
+var canvas_context = canvas.node().getContext('2d'),
+    scale_colors_fxns = create_color_scale_function(),
+    dv_stats_data = load_dv_data();
 
-//clone states SVG for transparent click layer
-var content = svgoriginal.html();
-var svg = mainfig.append('svg')
-      .html(content)
-      .attr('id', 'overlayStates')
-      .attr('width', 960)
-      .attr('height', 600)
-      .style('opacity', 0);
-
-svgoriginal.append('circle')
-      .attr("id", "siteHighlighter")
-      .attr("r", 8)
-      .attr("z-index", 100)
-      .style("fill", "blue")
-      .style("opacity", 0);
-      
-var scale_colors_fxns = create_color_scale_function();
-var dv_stats_data = load_dv_data();
+// add different figure features
 add_color_legend(scale_colors_fxns);
+clone_states();
+add_circle_selector();
 
 Promise.all([dv_stats_data]).then(function(data) {
   add_circles(data[0], canvas_context, scale_colors_fxns);
