@@ -4,7 +4,7 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {create_circles, create_color_scale_function, add_color_legend} from './modules/circles';
-import {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder} from './modules/interactivity';
+import {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked} from './modules/interactivity';
 
 // set up configs
 var fig_cfg = {
@@ -50,6 +50,11 @@ Promise.all([dv_stats_data]).then(function(data) {
     .on("click", function () {
       find_closest_point(this, data[0]);
     });
+  
+  d3.select('#overlayStates').selectAll('path').on("click", function () {
+    var selectID = d3.select(this).attr('id');
+    clicked(selectID, fig_cfg);
+  });
     
   d3.select('#overlayLegend').selectAll("circle")
   .on("mouseover", function() {
