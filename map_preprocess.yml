@@ -24,10 +24,19 @@ targets:
     command: CRS(I("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
   
   svg_x:
-    command: c(I(960))
+    command: I(800)
   
   svg_y:
-    command: c(I(600))
+    command: I(500)
+  
+  topo_simple:
+    command: I(1e-4)
+  
+  topo_quant:
+    command: I(1e4)
+  
+  svg_prec:
+    command: I(1)
     
   # --- fetch --- #
   
@@ -51,11 +60,11 @@ targets:
     
   state_boundaries_mutated_sp:
     command: mutate_sp_coords(state_boundaries_albers_sp, STATEFP = I(list('02', c('72', '78'), c('15'))), 
-      scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -100, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
+      scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -120, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
   
   site_locations_mutated_sp:
     command: mutate_sp_coords(site_locations_albers_sp, ref = state_boundaries_albers_sp, STATEFP = I(list('02', c('72', '78'), c('15'))), 
-      scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -100, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
+      scale = I(c(0.47, 3, 1.5)), shift_x = I(c(90, -120, 520)), shift_y = I(c(-465, 90, -110)), rotate = I(c(-50, 20, -35)))
   
   state_boundaries_scaled_sp:
     command: scale_fit_sp_coords(state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
@@ -64,13 +73,14 @@ targets:
     command: scale_fit_sp_coords(site_locations_mutated_sp, ref = state_boundaries_mutated_sp, range_x = svg_x, range_y = svg_y)
     
   cache/state_boundaries_scaled.geojson:
-    command: geojson_write(state_boundaries_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
+    command: geojson_write(state_boundaries_scaled_sp, file = target_name) # confirmed this looks good on http://mapshaper.org/
    
   cache/site_locations_scaled.geojson:
-    command: geojson_write(site_locatations_scaled_sp, file = target_name, precision = I(2)) # confirmed this looks good on http://mapshaper.org/
+    command: geojson_write(site_locatations_scaled_sp, file = target_name) # confirmed this looks good on http://mapshaper.org/
      
   cache/state_boundaries.svg:
-    command: geo2svg("cache/state_boundaries_scaled.geojson", target_name, w = svg_x, h = svg_y)
+    command: geo2svg("cache/state_boundaries_scaled.geojson", target_name, 
+      w = svg_x, h = svg_y, svg_prec = svg_prec, topo_simple = topo_simple, topo_quant = topo_quant)
      
   cache/site_coords.tsv:
     command: points_to_svg_coords('cache/site_locations_scaled.geojson', target_name)
