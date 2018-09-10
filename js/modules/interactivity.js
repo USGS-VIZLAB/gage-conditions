@@ -24,12 +24,6 @@ function clone_legend(fig_cfg, legend_cfg) {
           .attr("transform", 
             "translate(" + legend_cfg.translate_x + "," + legend_cfg.translate_y + ")");
   
-  overlayLegend.selectAll("circle").on("click", function() {
-    
-    d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
-    var legend_color_str = d3.select(this).attr("fill");
-    console.log(legend_color_str);
-  });
 }
 
 function add_circle_selector() {

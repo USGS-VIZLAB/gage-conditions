@@ -1,30 +1,62 @@
 
-function add_circles(dv_stats_data, canvas_context, scale_colors_fxn) {
+function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cfg,
+                        legend_cfg, is_legend_action, selected_color) {
   
-  canvas_context.beginPath();
-  for (let i in dv_stats_data) {
-    var radius = 2,
-        scale = 2,
-        point = dv_stats_data[i];
-    if (scale > 2) radius = 1;
-    canvas_context.fillStyle = scale_colors_fxn.circles(point.per);
-    canvas_context.moveTo(point.x + radius, point.y);
-    canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+  var radius = 2,
+      scale = 2;
+  if (scale > 2) radius = 1;
+  
+  canvas_context.clearRect(0, 0, fig_cfg.width, fig_cfg.height);
+  
+  for (let b in d3.range(legend_cfg.num_bins)) {
+    // make one path per color
+    var color_category = scale_colors_fxns.legend(b);
+    canvas_context.beginPath();
+    
+    for (let i in dv_stats_data) {
+      var point = dv_stats_data[i],
+          color_point = scale_colors_fxns.circles(point.per);
+      
+      // are we drawing the point in this loop iteration?
+      if (color_point === color_category) {
+        // we are drawing the point with default style
+        canvas_context.fillStyle = color_point;
+        canvas_context.strokeStyle = color_point;
+        
+        // now we need to check if the style should change
+        // is it part of a legend hover action?
+        if(is_legend_action) {
+          // is it the selected category?
+          if(color_category === selected_color) {
+            // then the radius should be made much bigger
+            radius = 4;
+            if (scale > 2) radius = 3;
+          } else {
+            //otherwise make a regular hollow point
+            canvas_context.fillStyle = "transparent";
+          }
+        }
+        
+        // now define the point geometry
+        canvas_context.moveTo(point.x + radius, point.y);
+        canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+      }
+      
+    }
+    // finish the current path (this is what actually does the final drawing)
+    canvas_context.fill();
+    canvas_context.stroke();
   }
-  canvas_context.fill();
-  
 }
 
-function create_color_scale_function(num_colors) {
+function create_color_scale_function(legend_cfg) {
   
   // this function requires the following d3 libraries
   // d3-color.v1.min.js
   // d3-interpolate.v1.min.js
   // d3-scale-chromatic.v1.min.js
   
-  if(num_colors === undefined) { 
-    num_colors = 17; // 17 color categories by default
-  }
+  var num_colors = legend_cfg.num_bins; 
   var color_indices = d3.range(num_colors);
   
   //d3.interpolateRdBu expects numbers between 0 and 1
@@ -112,4 +144,4 @@ function add_color_legend(scale_colors_fxn, legend_cfg) {
       });
 }
 
-export {add_circles, create_color_scale_function, add_color_legend};
+export {create_circles, create_color_scale_function, add_color_legend};
