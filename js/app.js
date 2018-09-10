@@ -4,7 +4,7 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {create_circles, create_color_scale_function, add_color_legend} from './modules/circles';
-import {clone_states, clone_legend, add_circle_selector, find_closest_point} from './modules/interactivity';
+import {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder} from './modules/interactivity';
 
 // set up configs
 var fig_cfg = {
@@ -40,6 +40,7 @@ add_color_legend(scale_colors_fxns, legend_cfg);
 add_circle_selector();
 clone_states(fig_cfg);
 clone_legend(fig_cfg, legend_cfg);
+add_placeholder(fig_cfg);
 
 Promise.all([dv_stats_data]).then(function(data) {
   create_circles(data[0], canvas_context, scale_colors_fxns, fig_cfg, legend_cfg, 
