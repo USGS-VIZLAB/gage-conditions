@@ -27,11 +27,20 @@ function clone_legend(fig_cfg, legend_cfg) {
         .attr("transform", 
             // need to transform so that they line up correctly
             // the circles start getting placed at the top left corner of the svg
-            "translate(" + (legend_cfg.translate_x) + "," + (legend_cfg.translate_y) + ")")
+            "translate(" + (legend_cfg.translate_x-circle_radius) + "," + 
+            (legend_cfg.translate_y-circle_radius) + ")")
         .style('opacity', 0)
-        .style("position", "absolute")
-        .html(content);
-  
+        .style("position", "absolute");
+    
+  // add circles
+  overlayLegend.append('g')
+    .attr("transform", 
+      // need to transform so that they line up correctly
+      // the circles start getting placed at the top left corner of the svg
+      "translate(" + (circle_radius) + "," + 
+      (circle_radius) + ")")
+    .html(content);
+      
 }
 
 function add_circle_selector() {
@@ -86,4 +95,5 @@ function add_placeholder(fig_cfg) {
         .style('opacity', 0)
         .attr("z-index", -100);
 }
+
 export {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder};

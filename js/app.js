@@ -51,11 +51,17 @@ Promise.all([dv_stats_data]).then(function(data) {
       find_closest_point(this, data[0]);
     });
     
-  d3.select('#overlayLegend').selectAll("circle").on("click", function() {
+  d3.select('#overlayLegend').selectAll("circle")
+  .on("mouseover", function() {
     d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
     var legend_color_str = d3.select(this).attr("fill");
     create_circles(data[0], canvas_context, scale_colors_fxns, fig_cfg, legend_cfg,
                    true, legend_color_str);
+  })
+  .on("mouseout", function() {
+    // reset circles
+    create_circles(data[0], canvas_context, scale_colors_fxns, fig_cfg, legend_cfg, 
+                   false, null);
   });
   
 });
