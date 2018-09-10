@@ -105,43 +105,7 @@ function add_color_legend(scale_colors_fxn, legend_cfg) {
       .attr("cy", function(d) { return 0; })
       .attr("r", legend_cfg.circle_radius)
       .attr("fill", function(d) { return scale_colors_fxn.legend(d); })
-      .attr("stroke", "transparent")
-      .on("mouseover", function(d) {
-        d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
-        var legend_color_str = scale_colors_fxn.legend(d);
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str !== legend_color_str; 
-            })
-            .attr("stroke", function(d) { return scale_colors_fxn.circles(d.per); })
-            .attr("stroke-opacity", 0.5)
-            .attr("fill", "transparent");
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str === legend_color_str; 
-            })
-            .attr("r", 5);
-      })
-      .on("mouseout", function(d) {
-        d3.select(this).attr("stroke", "transparent");
-        var legend_color_str = scale_colors_fxn.legend(d);
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str !== legend_color_str; 
-            })
-            .attr("stroke", "transparent")
-            .attr("stroke-opacity", 1)
-            .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
-        d3.selectAll('.gage_point')
-              .filter(function(d) { 
-                var color_str = scale_colors_fxn.circles(d.per);
-                return color_str === legend_color_str; 
-              })
-              .attr("r", 2);
-      });
+      .attr("stroke", "transparent");
 }
 
 export {create_circles, create_color_scale_function, add_color_legend};
