@@ -48,12 +48,12 @@ Promise.all([dv_stats_data]).then(function(data) {
   
   d3.select('#overlayStates')
     .on("click", function () {
-      find_closest_point(this, data[0]);
+      //find_closest_point(this, data[0]);
     });
   
   d3.select('#overlayStates').selectAll('path').on("click", function () {
     var selectID = d3.select(this).attr('id');
-    clicked(selectID, fig_cfg);
+    clicked(selectID, fig_cfg, data[0], scale_colors_fxns, legend_cfg);
   });
     
   d3.select('#overlayLegend').selectAll("circle")

@@ -97,15 +97,16 @@ function add_placeholder(fig_cfg) {
 }
 
 //zooming stuff below here
-function clicked(d, fig_cfg) {
-  var selected;
+function clicked(d, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
+  var selected, 
+      svg = d3.select("#overlayStates");
   //bounding box links
   // https://bl.ocks.org/mbostock/4699541
   // https://bl.ocks.org/mbostock/2206590
   //get bounding box and centroid from SVG path
   console.log(d);
   // can't select individual paths right now
-  var state = d3.select('#plotarea');//.select("#" + d);
+  var state = d3.select('#plotarea').select("#" + d);
   var element = state.node();
   var bbox = element.getBBox();
   var centroid = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
@@ -129,27 +130,34 @@ function clicked(d, fig_cfg) {
   //make selected orange
   svg.select("#" + d)
     .classed("active", d === selected);
-  //translate(x, y, k, selected);
+  
+  translate(x, y, k, selected, fig_cfg, dv_data, scale_colors_fxns, legend_cfg);
 }
     
-function translate(x, y, k, selected) {
+function translate(x, y, k, selected, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
   //make sure transition gets applied to both the original svg and clone
   d3.selectAll("path").transition()
     .duration(100)
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+    .attr("transform", "translate(" + fig_cfg.width / 2 + "," + fig_cfg.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
+  
   //scale and transform canvas layer
   // https://bl.ocks.org/lacroute/af1b46da4cb4579f93986b0119635ec2
+  var canvas = d3.select("#mainCanvas");
+  var context = canvas.node().getContext('2d');
+  
   canvas.transition()
     .duration(100)
     .on("start", function () {
-      context.clearRect(0, 0, width, height);
+      context.clearRect(0, 0, fig_cfg.width, fig_cfg.height);
     })
     .on("end", function () {
       context.resetTransform();
-      if (selected) context.translate(width / 2 - x * k, height / 2 - y * k);
+      if (selected) context.translate(fig_cfg.width / 2 - x * k, fig_cfg.height / 2 - y * k);
       context.scale(k, k);
-      drawPoints(k)
+      create_circles(dv_data, context, scale_colors_fxns, fig_cfg,
+                     legend_cfg, false, null);
     });
 }
 
+import {create_circles} from './circles';
 export {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked};
