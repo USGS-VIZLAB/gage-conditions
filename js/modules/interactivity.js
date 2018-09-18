@@ -122,7 +122,7 @@ function clicked(d, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
     var element = state.node();
     var bbox = element.getBBox();
     var centroid = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
-    var zoombuffer = 0.9;
+    var zoombuffer = 0.6; // smaller number = farther out
     x = centroid[0];
     y = centroid[1];
     k = zoombuffer / Math.max(bbox.width / fig_cfg.width, bbox.height / fig_cfg.height);
