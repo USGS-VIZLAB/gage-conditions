@@ -47,8 +47,9 @@ Promise.all([dv_stats_data]).then(function(data) {
                  false, null);
   
   d3.select('#overlayStates')
-    .on("click", function () {
-      //find_closest_point(this, data[0]);
+    .on("mouseover", function () {
+      // this is pretty rough right now
+      find_closest_point(this, data[0]);
     });
   
   d3.select('#overlayStates').selectAll('path').on("click", function () {
