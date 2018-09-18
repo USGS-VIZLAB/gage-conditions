@@ -98,40 +98,47 @@ function add_placeholder(fig_cfg) {
 
 //zooming stuff below here
 function clicked(d, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
-  var selected, 
-      svg = d3.select("#overlayStates");
-  //bounding box links
-  // https://bl.ocks.org/mbostock/4699541
-  // https://bl.ocks.org/mbostock/2206590
-  //get bounding box and centroid from SVG path
-  console.log(d);
-  // can't select individual paths right now
-  var state = d3.select('#plotarea').select("#" + d);
-  var element = state.node();
-  var bbox = element.getBBox();
-  var centroid = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
-  var zoombuffer = 0.9;
-  var x, y, k;
-  if (d && selected !== d) {
+  var prev_selected_state = d3.selectAll(".activeState"), 
+      svg = d3.select("#overlayStates"),
+      prev_id, x, y, k, selected;
+  
+  // zoom out if you selected the same state
+  if(prev_selected_state.node() !== null) {
+    prev_id = prev_selected_state.attr("id");
+  } 
+  
+  //clear all selected states
+  svg.selectAll("path")
+    .classed("activeState", false);
+  
+  if (d !== prev_id) {
+    // zooming in to the new selected state, d
+    
+    // bounding box links
+    // https://bl.ocks.org/mbostock/4699541
+    // https://bl.ocks.org/mbostock/2206590
+    // get bounding box and centroid from SVG path
+    var state = d3.select('#plotarea').select("#" + d);
+    var element = state.node();
+    var bbox = element.getBBox();
+    var centroid = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];
+    var zoombuffer = 0.9;
     x = centroid[0];
     y = centroid[1];
     k = zoombuffer / Math.max(bbox.width / fig_cfg.width, bbox.height / fig_cfg.height);
-    selected = d;
+      
+    //make selected orange
+    svg.select("#" + d)
+      .classed("activeState", true);
   } else {
+    // zooming out
     x = fig_cfg.width / 2;
     y = fig_cfg.height / 2;
     k = 1;
-    selected = null;
   }
-  console.log('centroid x:', x, 'centroid y:', y, 'scale:', k, 'selected:', selected);
-  //clear all selected states
-  svg.selectAll("path")
-    .classed("active", false);
-  //make selected orange
-  svg.select("#" + d)
-    .classed("active", d === selected);
+  console.log('centroid x:', x, 'centroid y:', y, 'scale:', k, 'selected:', d);
   
-  translate(x, y, k, selected, fig_cfg, dv_data, scale_colors_fxns, legend_cfg);
+  translate(x, y, k, d, fig_cfg, dv_data, scale_colors_fxns, legend_cfg);
 }
     
 function translate(x, y, k, selected, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
