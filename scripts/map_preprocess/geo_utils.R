@@ -86,9 +86,9 @@ geo2svg <- function(geojson_filepath, svg_filepath, w, h, svg_prec = 2, topo_sim
   
   system(sprintf("topoquantize %s %s -o %s", topo_quant, tempsimple, tempquant))
   
-  system(sprintf("topo2geo state_boundaries_scaled.json < %s", tempquant))
+  system(sprintf("topo2geo cache/state_boundaries_scaled.json < %s", tempquant))
   # write the file to ndjson (newline-delimited) and mutate the id to add the FIP- prefix:
-  system(sprintf("ndjson-split 'd.features' < state_boundaries_scaled.json | ndjson-map '(d.id = \"FIP-\"+d.id, d)'> %s", tempndjson))
+  system(sprintf("ndjson-split \"d.features\" < cache/state_boundaries_scaled.json | ndjson-map \"(d.id = 'FIP-'+d.properties.STATEFP, d)\"> %s", tempndjson))
   
   system(sprintf('geo2svg -n -w %s -h %s -p %s < %s > %s', w, h, svg_prec, tempndjson, svg_filepath))
   

@@ -1,36 +1,62 @@
 
-function add_circles(dv_stats_data, scale_colors_fxn) {
-
-  d3.select("#plotarea").selectAll(".gage_point")
-    .data(dv_stats_data)
-    .enter()
-    .append("circle")
-      .classed("gage_point", true)
-      .attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; })
-      .attr("r", 2)
-      .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); })
-      .attr("stroke", "transparent")
-      .on("mouseover", function(d) {
-        d3.select(this).attr("fill", "orange");
-        console.log(d.site_no);
-      })
-      .on("mouseout", function() {
-        d3.select(this)
-          .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
-      });
+function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cfg,
+                        legend_cfg, is_legend_action, selected_color) {
+  
+  var radius = 2,
+      scale = 2;
+  if (scale > 2) radius = 1;
+  
+  canvas_context.clearRect(0, 0, fig_cfg.width, fig_cfg.height);
+  
+  for (let b in d3.range(legend_cfg.num_bins)) {
+    // make one path per color
+    var color_category = scale_colors_fxns.legend(b);
+    canvas_context.beginPath();
+    
+    for (let i in dv_stats_data) {
+      var point = dv_stats_data[i],
+          color_point = scale_colors_fxns.circles(point.per);
+      
+      // are we drawing the point in this loop iteration?
+      if (color_point === color_category) {
+        // we are drawing the point with default style
+        canvas_context.fillStyle = color_point;
+        canvas_context.strokeStyle = color_point;
+        
+        // now we need to check if the style should change
+        // is it part of a legend hover action?
+        if(is_legend_action) {
+          // is it the selected category?
+          if(color_category === selected_color) {
+            // then the radius should be made much bigger
+            radius = 4;
+            if (scale > 2) radius = 3;
+          } else {
+            //otherwise make a regular hollow point
+            canvas_context.fillStyle = "transparent";
+          }
+        }
+        
+        // now define the point geometry
+        canvas_context.moveTo(point.x + radius, point.y);
+        canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+      }
+      
+    }
+    // finish the current path (this is what actually does the final drawing)
+    canvas_context.fill();
+    canvas_context.stroke();
+  }
 }
 
-function create_color_scale_function(num_colors) {
+function create_color_scale_function(legend_cfg) {
   
   // this function requires the following d3 libraries
   // d3-color.v1.min.js
   // d3-interpolate.v1.min.js
   // d3-scale-chromatic.v1.min.js
   
-  if(num_colors === undefined) { 
-    num_colors = 17; // 17 color categories by default
-  }
+  var num_colors = legend_cfg.num_bins; 
   var color_indices = d3.range(num_colors);
   
   //d3.interpolateRdBu expects numbers between 0 and 1
@@ -60,62 +86,26 @@ function create_color_scale_function(num_colors) {
   });
 }
 
-function add_color_legend(scale_colors_fxn) {
+function add_color_legend(scale_colors_fxn, legend_cfg) {
   
-  var num_colors = scale_colors_fxn.legend.range().length,
-      circle_radius = 10;
+  var num_colors = scale_colors_fxn.legend.range().length;
   
   var legend = d3.select("#plotarea")
     .append("g")
       .attr("id", "legend")
-      .attr("transform", "translate(" + 300 + "," + 40 + ")");
+      .attr("transform", 
+            "translate(" + legend_cfg.translate_x + "," + legend_cfg.translate_y + ")");
   
   legend.selectAll(".legend_point")
     .data(d3.range(num_colors))
     .enter()
     .append("circle")
       .classed("legend_point", true)
-      .attr("cx", function(d) { return d*circle_radius*2.2; })
+      .attr("cx", function(d) { return d*legend_cfg.circle_radius*2.2; })
       .attr("cy", function(d) { return 0; })
-      .attr("r", circle_radius)
+      .attr("r", legend_cfg.circle_radius)
       .attr("fill", function(d) { return scale_colors_fxn.legend(d); })
-      .attr("stroke", "transparent")
-      .on("mouseover", function(d) {
-        d3.select(this).attr("stroke", "orange").attr("stroke-width", 2);
-        var legend_color_str = scale_colors_fxn.legend(d);
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str !== legend_color_str; 
-            })
-            .attr("stroke", function(d) { return scale_colors_fxn.circles(d.per); })
-            .attr("stroke-opacity", 0.5)
-            .attr("fill", "transparent");
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str === legend_color_str; 
-            })
-            .attr("r", 5);
-      })
-      .on("mouseout", function(d) {
-        d3.select(this).attr("stroke", "transparent");
-        var legend_color_str = scale_colors_fxn.legend(d);
-        d3.selectAll('.gage_point')
-            .filter(function(d) { 
-              var color_str = scale_colors_fxn.circles(d.per);
-              return color_str !== legend_color_str; 
-            })
-            .attr("stroke", "transparent")
-            .attr("stroke-opacity", 1)
-            .attr("fill", function(d) { return scale_colors_fxn.circles(d.per); });
-        d3.selectAll('.gage_point')
-              .filter(function(d) { 
-                var color_str = scale_colors_fxn.circles(d.per);
-                return color_str === legend_color_str; 
-              })
-              .attr("r", 2);
-      });
+      .attr("stroke", "transparent");
 }
 
-export {add_circles, create_color_scale_function, add_color_legend};
+export {create_circles, create_color_scale_function, add_color_legend};
