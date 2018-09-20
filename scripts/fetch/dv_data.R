@@ -14,19 +14,21 @@ fetch.dv_data <- function(viz){
   startDate <- paste0(year, "-01-01")
   endDate <- paste0(year, "-12-31")
   
-  dv_sites_data <- sapply(sites, FUN = function(x){
+  dv_sites_data <- lapply(sites, FUN = function(x){
     d <- renameNWISColumns(
       readNWISdata(service="dv",
                    site = x,
                    parameterCd="00060",
                    startDate = startDate,
                    endDate = endDate))
-    if (!is.null(d$Flow)){
-      d$Flow
+    if(nrow(d) > 0 && any(names(d) == "Flow")) {
+      d[, c("dateTime", "Flow")]
     } else {
-      NA
+      NULL
     }
   })
+  
+  names(dv_sites_data) <- sites
   
   jsonlite::write_json(dv_sites_data, viz[["location"]])
 }
