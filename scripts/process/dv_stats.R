@@ -20,9 +20,14 @@ process.dv_stats <- function(viz){
   get_dv <- function(site_no){
     out <- rep(NA, length(site_no))
     for (i in 1:length(site_no)){
-      val <- data[[site_no[i]]][1L]
-      if (!is.null(val)){
-        out[i] <- val
+      data_site <- data[[site_no[i]]]
+      if (!is.null(data_site) && length(data_site) > 0 && 
+            "Flow" %in% names(data_site)){
+        # this assumes dateTime comes back as character
+        data_date <- filter(data_site, dateTime == date)
+        if (nrow(data_date) != 0){
+          out[i] <- data_date[["Flow"]]
+        }
       }
     }
     return(out)
