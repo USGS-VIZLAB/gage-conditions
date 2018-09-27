@@ -28,7 +28,7 @@ d3.select("#mainFig").select("svg")
 var canvas = d3.select("#mainFig").append('canvas')
       .attr('id', "mainCanvas")
       .attr('width', fig_cfg.width)
-      .attr('height', fig_cfg.width)
+      .attr('height', fig_cfg.height)
       .style("position", "absolute");
 
 var canvas_context = canvas.node().getContext('2d'),
