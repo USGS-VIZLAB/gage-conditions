@@ -13,7 +13,7 @@ var fig_cfg = {
     },
     legend_cfg = {
       translate_x: 300,
-      translate_y: 40,
+      translate_y: 35,
       circle_radius: 10,
       num_bins: 17
     },

@@ -89,6 +89,20 @@ function create_color_scale_function(legend_cfg) {
 function add_color_legend(scale_colors_fxn, legend_cfg, z_indices) {
   
   var num_colors = scale_colors_fxn.legend.range().length;
+
+  // add white background behind legend so points don't crowd on zoom
+  var background = {
+    height: legend_cfg.circle_radius * 4,
+    width: (num_colors + 2.5) * 2 * legend_cfg.circle_radius,
+    tx: legend_cfg.translate_x - (2 * legend_cfg.circle_radius),
+    ty: legend_cfg.translate_y - (2 * legend_cfg.circle_radius)
+  };
+  
+  d3.select("#mapExtras").append("rect")
+    .attr("height", background.height)
+    .attr("width", background.width)
+    .style("fill", "white")
+    .attr("transform", "translate(" + background.tx + "," + background.ty + ")");
   
   var legend = d3.select("#mapExtras")
     .append("g")
