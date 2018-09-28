@@ -34,6 +34,11 @@ function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cf
           } else {
             //otherwise make a regular hollow point
             canvas_context.fillStyle = "transparent";
+            // need to change radius back to 2 here because if
+            // the point we are changing is in a category after 
+            // the selected category, the radius is now 4
+            radius = 2;
+            if (scale > 2) radius = 1;
           }
         }
         
