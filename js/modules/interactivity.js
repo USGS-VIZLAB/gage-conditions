@@ -1,17 +1,18 @@
 
-function clone_states(fig_cfg) {
+function clone_states(fig_cfg, z_indices) {
   //clone states SVG for transparent click layer
-  var content = d3.select("#plotarea").html();
+  var content = d3.select("#mapSvg").html();
   d3.select("#mainFig").append('svg')
         .html(content)
         .attr('id', 'overlayStates')
         .attr('width', fig_cfg.width)
         .attr('height', fig_cfg.height)
         .style('opacity', 0)
-        .style("position", "absolute");
+        .style("position", "absolute")
+        .style('z-index', z_indices.overlayStates);
 }
 
-function clone_legend(fig_cfg, legend_cfg) {
+function clone_legend(fig_cfg, legend_cfg, z_indices) {
   var circle_radius = d3.select("#legend").select("circle").attr("r"),
       num_circles = d3.select("#legend").selectAll("circle").size(),
       first_position = d3.select("#legend").select("circle:first-child").attr("cx"),
@@ -30,7 +31,8 @@ function clone_legend(fig_cfg, legend_cfg) {
             "translate(" + (legend_cfg.translate_x-circle_radius) + "," + 
             (legend_cfg.translate_y-circle_radius) + ")")
         .style('opacity', 0)
-        .style("position", "absolute");
+        .style("position", "absolute")
+        .style('z-index', z_indices.overlayLegend);
     
   // add circles
   overlayLegend.append('g')
@@ -43,13 +45,13 @@ function clone_legend(fig_cfg, legend_cfg) {
       
 }
 
-function add_circle_selector() {
+function add_circle_selector(z_indices) {
   
   // add circle to use to highlight selected points
-  d3.select("#plotarea").append('circle')
+  d3.select("#mapExtras").append('circle')
     .attr("id", "siteHighlighter")
     .attr("r", 8)
-    .attr("z-index", 100)
+    .style("z_index", z_indices.siteHighlighter)
     .style("fill", "blue")
     .style("opacity", 0);
 }
@@ -84,16 +86,16 @@ function find_closest_point(click, dv_stats_data) {
   }
 }
 
-function add_placeholder(fig_cfg) {
+function add_placeholder(fig_cfg, z_indices) {
   // this is needed to keep the footer spaced correctly
   // the key is to not add `position: absolute`
   d3.select("#mainFig").append('svg')
-        .attr('id', 'overlayPlaceholder')
+        .attr('id', 'underlayPlaceholder')
         .attr('width', fig_cfg.width)
         .attr('height', fig_cfg.height)
         .attr('pointer-events', 'none')
         .style('opacity', 0)
-        .attr("z-index", -100);
+        .style('z-index', z_indices.underlayPlaceholder);
 }
 
 //zooming stuff below here
@@ -118,7 +120,7 @@ function clicked(d, fig_cfg, dv_data, scale_colors_fxns, legend_cfg) {
     // https://bl.ocks.org/mbostock/4699541
     // https://bl.ocks.org/mbostock/2206590
     // get bounding box and centroid from SVG path
-    var state = d3.select('#plotarea').select("#" + d);
+    var state = d3.select('#mapSvg').select("#" + d);
     var element = state.node();
     var bbox = element.getBBox();
     var centroid = [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2];

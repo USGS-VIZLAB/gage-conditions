@@ -86,13 +86,14 @@ function create_color_scale_function(legend_cfg) {
   });
 }
 
-function add_color_legend(scale_colors_fxn, legend_cfg) {
+function add_color_legend(scale_colors_fxn, legend_cfg, z_indices) {
   
   var num_colors = scale_colors_fxn.legend.range().length;
   
-  var legend = d3.select("#plotarea")
+  var legend = d3.select("#mapExtras")
     .append("g")
       .attr("id", "legend")
+      .style("z-index", z_indices.legend)
       .attr("transform", 
             "translate(" + legend_cfg.translate_x + "," + legend_cfg.translate_y + ")");
   
