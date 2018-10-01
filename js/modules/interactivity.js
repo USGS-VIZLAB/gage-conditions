@@ -76,6 +76,9 @@ function find_closest_point(click, dv_stats_data) {
       .attr("cy", node.y)
       .style("opacity", 1);
 
+    // show site information
+    showSiteInfo(node);
+
     console.log('you clicked siteID: ' + node.siteID);
 
   }
@@ -166,5 +169,60 @@ function translate(x, y, k, selected, fig_cfg, dv_data, scale_colors_fxns, legen
     });
 }
 
+function add_siteInfo_text(fig_cfg) {
+  
+  var siteInfoSvg = d3.select("#mainFig").append("svg")
+    .attr("id", "siteInfoSvg")
+    .style("z-index", 50)
+    .style("position", "absolute")
+    .attr('width', fig_cfg.width*0.3)
+    .attr('height', fig_cfg.height*0.3)
+    .attr('transform', 'translate('+fig_cfg.width*0.8+','+fig_cfg.height*0.3+')')
+    .style("font-family", "'Source Sans Pro', sans-serif")
+    .attr('dominant-baseline', 'hanging');
+  
+  siteInfoSvg.append('text')
+    .attr('id', 'siteInfoTitle')
+    .style("font-size", "22px")
+    .attr("dy", 0);
+    
+  siteInfoSvg.append('text')
+    .attr('id', 'siteInfoMedian')
+    .style("font-size", "18px")
+    .attr("dy", 25);
+    
+  siteInfoSvg.append('text')
+    .attr('id', 'siteInfoDV')
+    .style("font-size", "18px")
+    .attr("dy", 45);
+}
+
+function showSiteInfo(node) {
+  
+  var median_value = node.p50_va,
+      dv_value = node.dv_val;
+  
+  if(median_value) {
+    median_value = median_value + " cfs";
+  } else {
+    median_value = "NA";
+  }
+  
+  if(dv_value) {
+    dv_value = dv_value + " cfs";
+  } else {
+    dv_value = "NA";
+  }
+  
+  d3.select("#siteInfoSvg").attr("display", "block");
+  d3.select("#siteInfoTitle").text("Site "+ node.siteID);
+  d3.select("#siteInfoMedian").text("Site median flow: "+ median_value);
+  d3.select("#siteInfoDV").text("Daily flow: "+ dv_value);
+}
+
+function hideSiteInfo() {
+  d3.select("#siteInfoSvg").attr("display", "none");
+}
+
 import {create_circles} from './circles';
-export {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked};
+export {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked, add_siteInfo_text, hideSiteInfo};
