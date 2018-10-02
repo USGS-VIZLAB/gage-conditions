@@ -2,51 +2,91 @@
 function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cfg,
                         legend_cfg, is_legend_action, selected_color) {
   
-  var radius = 2,
+  var selected_color_points = {},
+      radius_selected = 4,
+      radius_reg = 2,
       scale = 2;
-  if (scale > 2) radius = 1;
+  
+  if (scale > 2) {
+    radius_reg = 1;
+    radius_selected = 3;
+  }
   
   canvas_context.clearRect(0, 0, fig_cfg.width, fig_cfg.height);
   
+  // loop through the different legend bins
   for (let b in d3.range(legend_cfg.num_bins)) {
     // make one path per color
     var color_category = scale_colors_fxns.legend(b);
-    canvas_context.beginPath();
     
+    // not going to draw the selected points yet, only capture the data
+    // so we can't set any of the path stuff
+    if(color_category !== selected_color) {
+        canvas_context.beginPath();
+    }
+    
+    // loop through the data points
     for (let i in dv_stats_data) {
       var point = dv_stats_data[i],
           color_point = scale_colors_fxns.circles(point.per);
       
-      // are we drawing the point in this loop iteration?
+      // is this point in the current color category for the loop iteration?
       if (color_point === color_category) {
-        // we are drawing the point with default style
+        
+        // is it the selected category?
+        if(color_category === selected_color) {
+          // save the point data, but skip the rest and go to the next loop iteration
+          // the selected points will be drawn after so they are on top
+          selected_color_points[i] = point;
+          continue; 
+        }
+        
+        // start by drawing the point with default style
         canvas_context.fillStyle = color_point;
         canvas_context.strokeStyle = color_point;
         
         // now we need to check if the style should change
         // is it part of a legend hover action?
         if(is_legend_action) {
-          // is it the selected category?
-          if(color_category === selected_color) {
-            // then the radius should be made much bigger
-            radius = 4;
-            if (scale > 2) radius = 3;
-          } else {
-            //otherwise make a regular hollow point
-            canvas_context.fillStyle = "transparent";
-          }
+          // no selected color points here, so make a regular hollow point
+          canvas_context.fillStyle = "transparent";
         }
         
         // now define the point geometry
-        canvas_context.moveTo(point.x + radius, point.y);
-        canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+        canvas_context.moveTo(point.x + radius_reg, point.y);
+        canvas_context.arc(point.x, point.y, radius_reg, 0, 2 * Math.PI);
       }
       
+    }
+    
+    // skip the rest of this loop and go to the next one
+    // the selected points will be drawn after so they are on top
+    if(color_category === selected_color) {
+      continue;
+    }
+    
+    // finish the current path (this is what actually does the final drawing)
+    canvas_context.fill();
+    canvas_context.stroke();
+  }
+  
+  // Now draw any selected_color_points so that they are on top
+  if(selected_color_points) {
+    canvas_context.beginPath();
+    for (let i in selected_color_points) {
+      var selected_point = selected_color_points[i],
+          selected_color_point = scale_colors_fxns.circles(selected_point.per);
+      canvas_context.fillStyle = selected_color_point;
+      canvas_context.strokeStyle = selected_color_point;
+      // now define the point geometry
+      canvas_context.moveTo(selected_point.x + radius_selected, selected_point.y);
+      canvas_context.arc(selected_point.x, selected_point.y, radius_selected, 0, 2 * Math.PI);
     }
     // finish the current path (this is what actually does the final drawing)
     canvas_context.fill();
     canvas_context.stroke();
   }
+
 }
 
 function create_color_scale_function(legend_cfg) {
