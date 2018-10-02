@@ -10,9 +10,9 @@ info:
   required-packages:
     vizlab:
       repo: github
-      version: 0.3.8
+      version: 0.3.9
       name: USGS-VIZLAB/vizlab
-      ref: v0.3.8
+      ref: v0.3.9
     bit64:
       repo: CRAN
       version: 0.9-7
