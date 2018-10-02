@@ -3,9 +3,14 @@ function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cf
                         legend_cfg, is_legend_action, selected_color) {
   
   var selected_color_points = {},
-      radius = 2,
+      radius_selected = 4,
+      radius_reg = 2,
       scale = 2;
-  if (scale > 2) radius = 1;
+  
+  if (scale > 2) {
+    radius_reg = 1;
+    radius_selected = 3;
+  }
   
   canvas_context.clearRect(0, 0, fig_cfg.width, fig_cfg.height);
   
@@ -48,8 +53,8 @@ function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cf
         }
         
         // now define the point geometry
-        canvas_context.moveTo(point.x + radius, point.y);
-        canvas_context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+        canvas_context.moveTo(point.x + radius_reg, point.y);
+        canvas_context.arc(point.x, point.y, radius_reg, 0, 2 * Math.PI);
       }
       
     }
@@ -73,11 +78,9 @@ function create_circles(dv_stats_data, canvas_context, scale_colors_fxns, fig_cf
           selected_color_point = scale_colors_fxns.circles(selected_point.per);
       canvas_context.fillStyle = selected_color_point;
       canvas_context.strokeStyle = selected_color_point;
-      radius = 4; // radius of the selected points is bigger
-      if (scale > 2) radius = 3;
       // now define the point geometry
-      canvas_context.moveTo(selected_point.x + radius, selected_point.y);
-      canvas_context.arc(selected_point.x, selected_point.y, radius, 0, 2 * Math.PI);
+      canvas_context.moveTo(selected_point.x + radius_selected, selected_point.y);
+      canvas_context.arc(selected_point.x, selected_point.y, radius_selected, 0, 2 * Math.PI);
     }
     // finish the current path (this is what actually does the final drawing)
     canvas_context.fill();
