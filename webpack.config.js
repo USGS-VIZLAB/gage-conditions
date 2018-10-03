@@ -10,16 +10,5 @@ module.exports = {
       new webpack.ProvidePlugin({
           d3: 'd3'
       })
-    ],
-    module:{
-  		rules: [
-  			{
-  				test: /\.css$/,
-  				use: [
-  					'css-loader',
-  					'style-loader'
-  				]
-  			}
-  		]
-	  }
+    ]
 };
