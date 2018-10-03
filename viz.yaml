@@ -120,12 +120,13 @@ publish:
     depends: 
       header_css: lib-header-css
       footer_css: lib-footer-css
+      content_css: lib-content-css
       header: header_section
       footer: footer_section
       figure_section: figure_section
       dv_info: dv_stats_svg_coords
     context:
-      resources: [header_css, footer_css]
+      resources: [header_css, footer_css, content_css]
       sections: [figure_section]
   -
     id: header_section
