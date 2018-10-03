@@ -1,4 +1,4 @@
-vizlab: "0.3.8"
+vizlab: "0.3.10"
 info:
   id: gage-conditions
   name: USGS Gage Conditions
@@ -10,9 +10,9 @@ info:
   required-packages:
     vizlab:
       repo: github
-      version: 0.3.9
+      version: 0.3.10
       name: USGS-VIZLAB/vizlab
-      ref: v0.3.9
+      ref: v0.3.10
     bit64:
       repo: CRAN
       version: 0.9-7
