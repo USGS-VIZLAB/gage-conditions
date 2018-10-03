@@ -2,6 +2,9 @@
 var d3 = require('d3');
 
 // webpack import functions
+import 'css/content.css';
+import 'css/footer.css';
+import 'css/header.css';
 import {load_dv_data} from './modules/data_loading';
 import {create_circles, create_color_scale_function, add_color_legend} from './modules/circles';
 import {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked} from './modules/interactivity';
