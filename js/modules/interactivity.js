@@ -54,7 +54,7 @@ function add_circle_selector() {
     .style("opacity", 0);
 }
 
-function find_closest_point(click, dv_stats_data) {
+function show_closest_point(click, dv_stats_data) {
   var point = d3.mouse(click);
   var node;
   var minDistance = Infinity;
@@ -77,7 +77,7 @@ function find_closest_point(click, dv_stats_data) {
       .style("opacity", 1);
 
     // show site information
-    showSiteInfo(node);
+    show_site_info(node);
 
     console.log('you clicked siteID: ' + node.siteID);
 
@@ -197,7 +197,7 @@ function add_siteInfo_text(fig_cfg) {
     .attr("dy", 45);
 }
 
-function showSiteInfo(node) {
+function show_site_info(node) {
   
   var median_value = node.p50_va,
       dv_value = node.dv_val;
@@ -220,9 +220,9 @@ function showSiteInfo(node) {
   d3.select("#siteInfoDV").text("Daily flow: "+ dv_value);
 }
 
-function hideSiteInfo() {
+function hide_site_info() {
   d3.select("#siteInfoSvg").attr("display", "none");
 }
 
 import {create_circles} from './circles';
-export {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked, add_siteInfo_text, hideSiteInfo};
+export {clone_states, clone_legend, add_circle_selector, show_closest_point, add_placeholder, clicked, add_siteInfo_text, hide_site_info};
