@@ -73,7 +73,7 @@ process.dv_stats <- function(viz){
             sprintf("!is.na(%s)", tail(stat_colnames,1)), 
             sprintf("!is.na(%s)", "dv_val")) %>%
     mutate(per = int_per(.)) %>% 
-    select(site_no, per)
+    select(site_no, per, dv_val, p50_va)
   
   jsonlite::write_json(site_stats_viz, viz[["location"]])
 }

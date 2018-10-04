@@ -4,7 +4,7 @@ var d3 = require('d3');
 // webpack import functions
 import {load_dv_data} from './modules/data_loading';
 import {create_circles, create_color_scale_function, add_color_legend} from './modules/circles';
-import {clone_states, clone_legend, add_circle_selector, find_closest_point, add_placeholder, clicked} from './modules/interactivity';
+import {clone_states, clone_legend, add_circle_selector, show_closest_point, add_placeholder, clicked, add_siteInfo_text, hide_site_info} from './modules/interactivity';
 
 // set up configs
 var fig_cfg = {
@@ -56,6 +56,7 @@ var canvas_context = canvas.node().getContext('2d'),
 
 // add different figure features
 add_color_legend(scale_colors_fxns, legend_cfg, z_indices.legend);
+add_siteInfo_text(fig_cfg);
 add_circle_selector(z_indices.siteHighlighter);
 clone_states(fig_cfg, z_indices.overlayStates);
 clone_legend(fig_cfg, legend_cfg, z_indices.overlayLegend);
@@ -68,7 +69,10 @@ Promise.all([dv_stats_data]).then(function(data) {
   d3.select('#overlayStates')
     .on("mouseover", function () {
       // this is pretty rough right now
-      find_closest_point(this, data[0]);
+    show_closest_point(this, data[0]);
+    })
+    .on("mouseout", function() {
+      hide_site_info();
     });
   
   d3.select('#overlayStates').selectAll('path').on("click", function () {
