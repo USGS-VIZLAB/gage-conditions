@@ -8,8 +8,8 @@ import {clone_states, clone_legend, add_circle_selector, find_closest_point, add
 
 // set up configs
 var fig_cfg = {
-      width: 960,
-      height: 600
+      width: d3.select('svg').attr("width"),
+      height: d3.select('svg').attr("height")
     },
     legend_cfg = {
       translate_x: 300,
@@ -35,12 +35,10 @@ d3.select("#mainFig").select("svg")
 // Make a second svg to put the legend and siteHighlighter into
 // This will allow the map to be below the canvas points,
 // But the siteHighlighter and legend to be above the canvas layer
-var svgwidth = d3.select('#mapSvg').attr("width"),
-    svgheight = d3.select('#mapSvg').attr("height");
 d3.select('#mainFig').append('svg')
   .attr("id", "mapExtras")
-  .attr("width", svgwidth)
-  .attr("height", svgheight)
+  .attr("width", fig_cfg.width)
+  .attr("height", fig_cfg.height)
   .style("position", "absolute")
   .style("z-index", z_indices.mapExtras);
 
