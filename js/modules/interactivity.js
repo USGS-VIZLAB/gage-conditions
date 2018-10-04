@@ -179,7 +179,7 @@ function add_siteInfo_text(fig_cfg) {
     .style("position", "absolute")
     .attr('width', fig_cfg.width*0.3)
     .attr('height', fig_cfg.height*0.3)
-    .attr('transform', 'translate('+fig_cfg.width*0.8+','+fig_cfg.height*0.3+')')
+    .attr('transform', 'translate('+fig_cfg.width*0.95+','+fig_cfg.height*0.4+')')
     .style("font-family", "'Source Sans Pro', sans-serif")
     .attr('dominant-baseline', 'hanging');
   
@@ -203,7 +203,7 @@ function show_site_info(node) {
   
   var median_value = node.p50_va,
       dv_value = node.dv_val;
-  
+  console.log(dv_value);
   if(median_value) {
     median_value = median_value + " cfs";
   } else {
