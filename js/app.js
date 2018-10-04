@@ -8,40 +8,59 @@ import {clone_states, clone_legend, add_circle_selector, show_closest_point, add
 
 // set up configs
 var fig_cfg = {
-      width: 960,
-      height: 600
+      width: d3.select('svg').attr("width"),
+      height: d3.select('svg').attr("height")
     },
     legend_cfg = {
       translate_x: 300,
-      translate_y: 40,
+      translate_y: 35,
       circle_radius: 10,
       num_bins: 17
+    },
+    z_indices = {
+      underlayPlaceholder: -100,
+      mainCanvas: 10,
+      mapExtras: 20,
+      overlayStates: 30,
+      legend: 40,
+      overlayLegend: 50,
+      siteHighlighter: 100
     };
 
 // use existing svg element and add some attributes
 d3.select("#mainFig").select("svg")
-    .attr("id", "plotarea")
-    .style("z-index", -10)
+    .attr("id", "mapSvg")
     .style("position", "absolute");
+
+// Make a second svg to put the legend and siteHighlighter into
+// This will allow the map to be below the canvas points,
+// But the siteHighlighter and legend to be above the canvas layer
+d3.select('#mainFig').append('svg')
+  .attr("id", "mapExtras")
+  .attr("width", fig_cfg.width)
+  .attr("height", fig_cfg.height)
+  .style("position", "absolute")
+  .style("z-index", z_indices.mapExtras);
 
 // create canvas layer
 var canvas = d3.select("#mainFig").append('canvas')
       .attr('id', "mainCanvas")
       .attr('width', fig_cfg.width)
-      .attr('height', fig_cfg.width)
-      .style("position", "absolute");
+      .attr('height', fig_cfg.height)
+      .style("position", "absolute")
+      .style("z-index", z_indices.mainCanvas);
 
 var canvas_context = canvas.node().getContext('2d'),
     scale_colors_fxns = create_color_scale_function(legend_cfg),
     dv_stats_data = load_dv_data();
 
 // add different figure features
-add_color_legend(scale_colors_fxns, legend_cfg);
+add_color_legend(scale_colors_fxns, legend_cfg, z_indices.legend);
 add_siteInfo_text(fig_cfg);
-add_circle_selector();
-clone_states(fig_cfg);
-clone_legend(fig_cfg, legend_cfg);
-add_placeholder(fig_cfg);
+add_circle_selector(z_indices.siteHighlighter);
+clone_states(fig_cfg, z_indices.overlayStates);
+clone_legend(fig_cfg, legend_cfg, z_indices.overlayLegend);
+add_placeholder(fig_cfg, z_indices.underlayPlaceholder);
 
 Promise.all([dv_stats_data]).then(function(data) {
   create_circles(data[0], canvas_context, scale_colors_fxns, fig_cfg, legend_cfg, 
