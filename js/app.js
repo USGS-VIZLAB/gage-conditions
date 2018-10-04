@@ -55,11 +55,11 @@ var canvas_context = canvas.node().getContext('2d'),
     dv_stats_data = load_dv_data();
 
 // add different figure features
-add_color_legend(scale_colors_fxns, legend_cfg, z_indices);
-add_circle_selector(z_indices);
-clone_states(fig_cfg, z_indices);
-clone_legend(fig_cfg, legend_cfg, z_indices);
-add_placeholder(fig_cfg, z_indices);
+add_color_legend(scale_colors_fxns, legend_cfg, z_indices.legend);
+add_circle_selector(z_indices.siteHighlighter);
+clone_states(fig_cfg, z_indices.overlayStates);
+clone_legend(fig_cfg, legend_cfg, z_indices.overlayLegend);
+add_placeholder(fig_cfg, z_indices.underlayPlaceholder);
 
 Promise.all([dv_stats_data]).then(function(data) {
   create_circles(data[0], canvas_context, scale_colors_fxns, fig_cfg, legend_cfg, 

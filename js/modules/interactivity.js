@@ -1,5 +1,5 @@
 
-function clone_states(fig_cfg, z_indices) {
+function clone_states(fig_cfg, z_index) {
   //clone states SVG for transparent click layer
   var content = d3.select("#mapSvg").html();
   d3.select("#mainFig").append('svg')
@@ -9,10 +9,10 @@ function clone_states(fig_cfg, z_indices) {
         .attr('height', fig_cfg.height)
         .style('opacity', 0)
         .style("position", "absolute")
-        .style('z-index', z_indices.overlayStates);
+        .style('z-index', z_index);
 }
 
-function clone_legend(fig_cfg, legend_cfg, z_indices) {
+function clone_legend(fig_cfg, legend_cfg, z_index) {
   var circle_radius = d3.select("#legend").select("circle").attr("r"),
       num_circles = d3.select("#legend").selectAll("circle").size(),
       first_position = d3.select("#legend").select("circle:first-child").attr("cx"),
@@ -32,7 +32,7 @@ function clone_legend(fig_cfg, legend_cfg, z_indices) {
             (legend_cfg.translate_y-circle_radius) + ")")
         .style('opacity', 0)
         .style("position", "absolute")
-        .style('z-index', z_indices.overlayLegend);
+        .style('z-index', z_index);
     
   // add circles
   overlayLegend.append('g')
@@ -45,13 +45,13 @@ function clone_legend(fig_cfg, legend_cfg, z_indices) {
       
 }
 
-function add_circle_selector(z_indices) {
+function add_circle_selector(z_index) {
   
   // add circle to use to highlight selected points
   d3.select("#mapExtras").append('circle')
     .attr("id", "siteHighlighter")
     .attr("r", 8)
-    .style("z_index", z_indices.siteHighlighter)
+    .style("z_index", z_index)
     .style("fill", "blue")
     .style("opacity", 0);
 }
@@ -86,7 +86,7 @@ function find_closest_point(click, dv_stats_data) {
   }
 }
 
-function add_placeholder(fig_cfg, z_indices) {
+function add_placeholder(fig_cfg, z_index) {
   // this is needed to keep the footer spaced correctly
   // the key is to not add `position: absolute`
   d3.select("#mainFig").append('svg')
@@ -95,7 +95,7 @@ function add_placeholder(fig_cfg, z_indices) {
         .attr('height', fig_cfg.height)
         .attr('pointer-events', 'none')
         .style('opacity', 0)
-        .style('z-index', z_indices.underlayPlaceholder);
+        .style('z-index', z_index);
 }
 
 //zooming stuff below here
