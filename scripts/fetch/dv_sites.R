@@ -12,7 +12,7 @@ fetch.dv_sites <- function(viz){
   year <- deps[["year"]][["year"]]
   
   startDate <- paste0(year, "-01-01")
-  endDate <- paste0(year, "-12-31")
+  endDate <- paste0(year, "-01-02")
   hucs <- zeroPad(1:21, 2)
   
   sites <- c()
