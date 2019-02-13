@@ -1,6 +1,7 @@
 #!/bin/bash
 set -x
 viz_folder_name=$1  #make this container_name or something
+#just a test
 #first build image and create container 
 docker start ${viz_folder_name}
 docker cp ./. ${viz_folder_name}:/home/rstudio/${viz_folder_name}
