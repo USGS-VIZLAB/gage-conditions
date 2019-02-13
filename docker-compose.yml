@@ -1,0 +1,16 @@
+version: "3"
+services:
+  docker-dev-mode:
+    image: wdwatkins/gage-conditions
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8787:8787"
+    volumes:
+      - "/Users/wwatkins/Documents/R/gage-conditions-docker:/home/rstudio/gage-conditions-docker"
+#      - "/Users/wwatkins/Documents/R/gage-conditions:/home/rstudio/gage-conditions"
+    environment:
+      - ROOT=TRUE
+      - PASSWORD=mypass
+
