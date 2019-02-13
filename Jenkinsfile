@@ -15,7 +15,7 @@ pipeline {
                 } 
             }
             steps {
-                sh 'Rscript -e "vizlab::vizmake()"'
+                sh 'mkdir target; Rscript -e vizlab::vizmake("dv_sites_sp"); remake::make(remake_file = "map_preprocess.yml"); Rscript -e vizlab::vizmake()'
             }
         }
         stage('push to S3') {
