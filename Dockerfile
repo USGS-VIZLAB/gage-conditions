@@ -41,6 +41,7 @@ RUN    install2.r --error \
 	bit64
 	 		                    
 RUN mkdir /home/rstudio/gage-conditions
+RUN chown rstudio /home/rstudio/gage-conditions
 WORKDIR /home/rstudio/gage-conditions
-CMD ["bash"]
+#CMD ["bash"]
 
