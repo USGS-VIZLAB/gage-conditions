@@ -8,14 +8,15 @@ pipeline {
                 git "https://github.com/wdwatkins/water-use-15"
             }
         }
-        stage('build_viz') {
+        stage('build viz') {
             agent {
                 dockerfile {
                     args '-v ${WORKSPACE}:/home/rstudio/gage-conditions'
                 } 
             }
             steps {
-                sh 'mkdir target; Rscript -e vizlab::vizmake("dv_sites_sp"); remake::make(remake_file = "map_preprocess.yml"); Rscript -e vizlab::vizmake()'
+                sh 'mkdir target' 
+                r 'vizlab::vizmake("dv_sites_sp"); remake::make(remake_file = "map_preprocess.yml"); Rscript -e vizlab::vizmake()'
             }
         }
         stage('push to S3') {
