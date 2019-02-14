@@ -5,7 +5,7 @@ pipeline {
             agent any 
             steps {
                 sh 'wget -O DOIRootCA2.cer http://sslhelp.doi.net/docs/DOIRootCA2.cer'
-                git "https://github.com/wdwatkins/water-use-15"
+                git "https://github.com/wdwatkins/gage-conditions"
             }
         }
         stage('build viz') {
@@ -16,7 +16,11 @@ pipeline {
             }
             steps {
                 sh 'mkdir -p target' 
-                sh 'Rscript -e "vizlab::vizmake('dv_sites_sp'); remake::make(remake_file = 'map_preprocess.yml'); vizlab::vizmake()"'
+                sh '''
+                    Rscript -e 'vizlab::vizmake("dv_sites_sp")' 
+                    Rscript -e "remake::make(remake_file = 'map_preprocess.yml')"
+                    Rscript -e "vizlab::vizmake()"
+                   '''
             }
         }
         stage('push to S3') {
