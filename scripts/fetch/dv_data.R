@@ -12,7 +12,7 @@ fetch.dv_data <- function(viz){
   sites <- deps[["sites"]]
   
   startDate <- paste0(year, "-01-01")
-  endDate <- paste0(year, "-01-02")
+  endDate <- paste0(year, "-12-31")
   
   dv_sites_data <- lapply(sites, FUN = function(x){
     d <- renameNWISColumns(
